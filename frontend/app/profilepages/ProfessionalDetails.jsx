@@ -118,46 +118,52 @@ export default function ProfessionalDetails() {
 
         {/* Key Skills */}
         <div>
-          <label className="block font-medium mb-1">Key skills and expertise</label>
+        <label className="block font-medium mb-1">Key skills and expertise</label>
 
-          {/* Selected Skills */}
-          <div className="flex flex-wrap gap-2 mb-2">
+        {/* Selected Skills */}
+        <div className="flex flex-wrap gap-2 mb-2">
             {form.keySkills.map((skill) => (
-              <span
+            <span
                 key={skill}
                 className="flex items-center bg-black text-white px-2 py-1 rounded-full cursor-pointer"
-                onClick={() => handleRemoveSkill(skill)}
-              >
+                onClick={() => handleRemoveSkill(skill)}  // remove on click
+            >
                 {skill}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-3 h-3 ml-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </span>
-            ))}
-          </div>
 
-          {/* Skills Dropdown */}
-          <select
+                {/* Down Arrow Icon */}
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-3 h-3 ml-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+                >
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19 9l-7 7-7-7"
+                />
+                </svg>
+            </span>
+            ))}
+        </div>
+
+        {/* Skills Dropdown */}
+        <select
             onChange={(e) => {
-              handleSelectSkill(e.target.value);
-              e.target.value = ""; // reset dropdown after selection
+            handleSelectSkill(e.target.value);
+            e.target.value = ""; // reset after selection
             }}
             className="w-full border rounded bg-[#CCE9F2] px-3 py-2"
-          >
+        >
             <option value="">Select skill</option>
             {skillsOptions.map((skill) => (
-              <option key={skill} value={skill}>
+            <option key={skill} value={skill}>
                 {skill}
-              </option>
+            </option>
             ))}
-          </select>
+        </select>
         </div>
 
         {/* Submit Button */}
