@@ -27,9 +27,33 @@ export default function ProfessionalDetails() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   console.log("Form Submitted:", form);
+  // };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Submitted:", form);
+
+    const body = {
+      user_id: 1,  // Replace later with logged-in user ID
+      ...form
+    };
+
+    try {
+      const res = await fetch("http://localhost:5000/api/professional", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      const data = await res.json();
+      console.log("Saved:", data);
+      alert("Professional details saved!");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save professional details");
+    }
   };
 
   return (

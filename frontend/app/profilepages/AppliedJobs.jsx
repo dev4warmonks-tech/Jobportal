@@ -19,12 +19,40 @@ export default function AppliedJobs() {
           <div className="grid gap-4 md:grid-cols-2">
             {jobs.map((job) => (
               <div
-                key={job.id}
-                className="bg-white rounded-lg shadow p-4 hover:shadow-md transition-shadow"
+               key={job.id}
+                className="w-full p-[12px] bg-[#E2F4FA] border border-gray-300 rounded-lg shadow-md flex"
               >
-                <h3 className="text-lg font-semibold">{job.title}</h3>
-                <p className="text-gray-600">{job.company}</p>
-                <p className="mt-2 text-sm font-medium text-blue-600">{job.status}</p>
+                <img
+                  src="/images/oracle.jpg"
+                  alt="Job"
+                  className="w-[60px] h-[60px] object-cover rounded-md"
+                />
+
+                <div className="ml-4 flex flex-col md:flex-row justify-between">
+                  <div>
+                    <h4 className="font-semibold text-[18px] leading-[26px] font-['Poppins']">
+                      {job.title}
+                    </h4>
+                    <p className="text-gray-600 text-[12px] leading-[26px]">
+                      <span className="font-bold"> {job.company} </span>
+                      Chennai, 25K-50K, Design, Full time
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-[12px] leading-[22px]">
+                      <span>Chennai</span> · <span>5hr</span>
+                    </p>
+                    <div className="flex gap-[16px] mt-1">
+                      <span className="bg-black text-[12px] leading-[22px] text-white rounded-full px-[16px] py-[8px]">
+                        Python
+                      </span>
+                      <span className="bg-black text-[12px] leading-[22px] text-white rounded-full px-[16px] py-[8px]">
+                        AWS
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>

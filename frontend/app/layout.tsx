@@ -30,7 +30,10 @@ export default function RootLayout({
   rel="stylesheet"
 />
 </head>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5bc69796610067658591ca8e4dbbdae7407352c5
       <body
         className="overflow-x-hidden min-h-screen bg-black antialiased"
       >

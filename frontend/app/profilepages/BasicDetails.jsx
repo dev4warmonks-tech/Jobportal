@@ -15,13 +15,65 @@ export default function BasicDetails() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   if (form.subscriptionEmail) {
+  //     setIsSubscribed(true);
+  //   }
+  //   console.log("Form Submitted:", form);
+  // };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (form.subscriptionEmail) {
-      setIsSubscribed(true);
+
+    if (form.subscriptionEmail) setIsSubscribed(true);
+
+    try {
+      const res = await fetch("http://localhost:5000/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (!res.ok) throw new Error("Failed to save data");
+
+      const data = await res.json();
+      console.log("Saved to DB:", data);
+      alert("Your details have been saved!");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save data.");
     }
-    console.log("Form Submitted:", form);
   };
+
+
+    // const handleSubmit = async (e) => {
+    //   e.preventDefault();
+
+    //   // if (!userId) {
+    //   //   alert("No user ID found. Please log in first.");
+    //   //   return;
+    //   // }
+
+    //   if (form.subscriptionEmail) setIsSubscribed(true);
+
+    //   try {
+    //     const res = await fetch("http://localhost:5000/api/users", {
+    //       method: "PUT",
+    //       headers: { "Content-Type": "application/json" },
+    //       body: JSON.stringify(form),
+    //     });
+
+    //     if (!res.ok) throw new Error("Failed to save data");
+
+    //     const data = await res.json();
+    //     console.log("Saved to DB:", data);
+    //     alert("Your details have been saved!");
+    //   } catch (err) {
+    //     console.error(err);
+    //     alert("Failed to save data.");
+    //   }
+    // };
 
   return (
     <div className="mx-auto bg-[#E2F4FA] min-h-screen p-4 md:p-8">
