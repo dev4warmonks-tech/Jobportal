@@ -2,7 +2,7 @@
 import { useState } from "react";
 import BasicDetails from "./BasicDetails";
 import ProfessionalDetails from "./ProfessionalDetails";
-import AppliedJobs from "./appliedjobs";
+import AppliedJobs from "./AppliedJobs";
 import Topbar from "../components/topbar/page";
 import { SessionProvider } from "next-auth/react";
 
