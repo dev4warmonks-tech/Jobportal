@@ -23,7 +23,7 @@ export default function BasicDetails() {
       }
 
       try {
-        const response = await fetch(`http://localhost:5000/api/users/${session.user.id}`, {
+        const response = await fetch(`http://api.mindssparsh.com/api/users/${session.user.id}`, {
           headers: {
             'Authorization': `Bearer ${session.user.token}`,
           },

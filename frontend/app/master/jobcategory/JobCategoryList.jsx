@@ -4,7 +4,7 @@ export default function JobCategoryList({ categories, setEditItem, reload }) {
   const handleDelete = async (id) => {
     if (!confirm("Are you sure?")) return;
 
-    const res = await fetch(`http://localhost:5000/api/job-categories/${id}`, {
+    const res = await fetch(`http://api.mindssparsh.com/api/job-categories/${id}`, {
       method: "DELETE",
     });
 
@@ -33,13 +33,13 @@ export default function JobCategoryList({ categories, setEditItem, reload }) {
               <td className="p-2 border">{cat.jobCategory}</td>
               <td className="p-2 border">{cat.is_active ? "Yes" : "No"}</td>
               <td className="p-2 border-t flex gap-3 justify-center">
-                
+
                 {/* Edit Icon */}
                 <button onClick={() => setEditItem(cat)}
                   className="p-1.5 bg-black hover:bg-gray-900 text-white rounded-full shadow"
                   title="Edit"
                 >
-                   ✏️
+                  ✏️
                 </button>
 
                 {/* Delete Icon */}
@@ -48,7 +48,7 @@ export default function JobCategoryList({ categories, setEditItem, reload }) {
                   className="p-2 rounded hover:bg-gray-100 transition"
                   title="Delete"
                 >
-                   🗑️
+                  🗑️
                 </button>
 
               </td>

@@ -4,7 +4,7 @@ export default function DateList({ datelist, setEditItem, reload }) {
   const handleDelete = async (id) => {
     if (!confirm("Are you sure?")) return;
 
-    const res = await fetch(`http://localhost:5000/api/sort-by-dates/${id}`, {
+    const res = await fetch(`http://api.mindssparsh.com/api/sort-by-dates/${id}`, {
       method: "DELETE",
     });
 
@@ -40,7 +40,7 @@ export default function DateList({ datelist, setEditItem, reload }) {
                   className="p-1.5 bg-black hover:bg-gray-900 text-white rounded-full shadow"
                   title="Edit"
                 >
-                   ✏️
+                  ✏️
                 </button>
 
                 {/* Delete Icon */}
@@ -49,7 +49,7 @@ export default function DateList({ datelist, setEditItem, reload }) {
                   className="p-2 rounded hover:bg-gray-100 transition"
                   title="Delete"
                 >
-                   🗑️
+                  🗑️
                 </button>
               </td>
             </tr>

@@ -36,8 +36,8 @@ export default function JobCategoryForm({ editItem, setEditItem, reload }) {
     const method = editItem ? "PUT" : "POST";
 
     const url = editItem
-      ? `http://localhost:5000/api/job-categories/${editItem._id}`
-      : `http://localhost:5000/api/job-categories`;
+      ? `http://api.mindssparsh.com/api/job-categories/${editItem._id}`
+      : `http://api.mindssparsh.com/api/job-categories`;
 
     try {
       const res = await fetch(url, {

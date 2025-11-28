@@ -15,7 +15,7 @@ export default function CandidatesPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`http://localhost:5000/api/candidates`);
+      const res = await fetch(`http://api.mindssparsh.com/api/candidates`);
       if (!res.ok) {
         const errData = await res.json();
         throw new Error(errData.error || "Failed to load candidates");
