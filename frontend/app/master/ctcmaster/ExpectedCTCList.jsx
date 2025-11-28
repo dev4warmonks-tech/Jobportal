@@ -4,7 +4,7 @@ export default function ExpectedCTCList({ ctcs, setEditItem, reload }) {
   const handleDelete = async (id) => {
     if (!confirm("Are you sure?")) return;
 
-    const res = await fetch(`http://api.mindssparsh.com/api/expected-ctc/${id}`, {
+    const res = await fetch(`https://api.mindssparsh.com/api/expected-ctc/${id}`, {
       method: "DELETE",
     });
     if (res.ok) reload();

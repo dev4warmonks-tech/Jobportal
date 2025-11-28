@@ -15,7 +15,7 @@ export default function JobExperiencePage() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`http://api.mindssparsh.com/api/job-experiences`);
+      const res = await fetch(`https://api.mindssparsh.com/api/job-experiences`);
       if (!res.ok) {
         const errData = await res.json();
         throw new Error(errData.error || "Failed to load categories");

@@ -4,7 +4,7 @@ export default function DateList({ datelist, setEditItem, reload }) {
   const handleDelete = async (id) => {
     if (!confirm("Are you sure?")) return;
 
-    const res = await fetch(`http://api.mindssparsh.com/api/sort-by-dates/${id}`, {
+    const res = await fetch(`https://api.mindssparsh.com/api/sort-by-dates/${id}`, {
       method: "DELETE",
     });
 

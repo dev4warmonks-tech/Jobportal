@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-const API_URL = "http://api.mindssparsh.com/api/users";
+const API_URL = "https://api.mindssparsh.com/api/users";
 
 export default function EmployersList({ setEditItem, reload }) {
   const [employers, setEmployers] = useState([]);
@@ -118,7 +118,7 @@ export default function EmployersList({ setEditItem, reload }) {
                     <td className="py-3 px-4">
                       {employer.logo ? (
                         <img
-                          src={`http://api.mindssparsh.com/${employer.logo}`}
+                          src={`https://api.mindssparsh.com/${employer.logo}`}
                           alt="Logo"
                           className="w-10 h-10 object-cover rounded-full"
                         />

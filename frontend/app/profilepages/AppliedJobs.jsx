@@ -12,7 +12,7 @@ export default function AppliedJobs() {
     const fetchApplications = async () => {
       if (session?.user?.id) {
         try {
-          const response = await fetch(`http://api.mindssparsh.com/api/applications/user/${session.user.id}`);
+          const response = await fetch(`https://api.mindssparsh.com/api/applications/user/${session.user.id}`);
           if (response.ok) {
             const data = await response.json();
             setApplications(data);
@@ -57,7 +57,7 @@ export default function AppliedJobs() {
                 className="w-full p-[12px] bg-[#E2F4FA] border border-gray-300 rounded-lg shadow-md flex"
               >
                 <img
-                  src={app.jobId?.companyLogo ? `http://api.mindssparsh.com${app.jobId.companyLogo}` : "/images/oracle.jpg"}
+                  src={app.jobId?.companyLogo ? `https://api.mindssparsh.com${app.jobId.companyLogo}` : "/images/oracle.jpg"}
                   alt="Job"
                   className="w-[60px] h-[60px] object-cover rounded-md"
                   onError={(e) => { e.target.src = "/images/oracle.jpg" }}

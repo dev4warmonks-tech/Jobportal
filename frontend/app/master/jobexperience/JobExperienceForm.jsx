@@ -36,8 +36,8 @@ export default function JobExperienceForm({ editItem, setEditItem, reload }) {
     const method = editItem ? "PUT" : "POST";
 
     const url = editItem
-      ? `http://api.mindssparsh.com/api/job-experiences/${editItem._id}`
-      : `http://api.mindssparsh.com/api/job-experiences`;
+      ? `https://api.mindssparsh.com/api/job-experiences/${editItem._id}`
+      : `https://api.mindssparsh.com/api/job-experiences`;
 
     try {
       const res = await fetch(url, {

@@ -9,7 +9,7 @@ export default function EmployerProfilePage() {
 
   useEffect(() => {
     if (session) {
-      fetch(`http://api.mindssparsh.com/api/users/${session.user.id}`)
+      fetch(`https://api.mindssparsh.com/api/users/${session.user.id}`)
         .then(res => res.json())
         .then(data => setUser(data));
     }

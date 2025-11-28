@@ -56,8 +56,8 @@ export default function EmployersForm({ editItem, setEditItem, reload }) {
     try {
       const method = editItem ? "PUT" : "POST";
       const url = editItem
-        ? `http://api.mindssparsh.com/api/users/${editItem._id}`
-        : `http://api.mindssparsh.com/api/users`;
+        ? `https://api.mindssparsh.com/api/users/${editItem._id}`
+        : `https://api.mindssparsh.com/api/users`;
 
       const data = new FormData();
       data.append("firstName", formData.firstName);

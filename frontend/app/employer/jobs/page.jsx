@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { getJobs } from "../../api";
-const API_URL = "http://api.mindssparsh.com/api/jobs";
+const API_URL = "https://api.mindssparsh.com/api/jobs";
 
 
 export default function BasicDetails() {

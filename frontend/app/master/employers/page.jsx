@@ -15,7 +15,7 @@ export default function EmployersPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`http://api.mindssparsh.com/api/employers`);
+      const res = await fetch(`https://api.mindssparsh.com/api/employers`);
       if (!res.ok) {
         const errData = await res.json();
         throw new Error(errData.error || "Failed to load employers");

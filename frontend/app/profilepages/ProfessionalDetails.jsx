@@ -19,7 +19,7 @@ export default function ProfessionalDetails() {
 
   // Fetch experience options
   useEffect(() => {
-    fetch("http://api.mindssparsh.com/api/job-experiences")
+    fetch("https://api.mindssparsh.com/api/job-experiences")
       .then(res => res.json())
       .then(data => {
         setExperienceOptions(data);
@@ -36,7 +36,7 @@ export default function ProfessionalDetails() {
       }
 
       try {
-        const response = await fetch(`http://api.mindssparsh.com/api/professional/user/${session.user.id}`, {
+        const response = await fetch(`https://api.mindssparsh.com/api/professional/user/${session.user.id}`, {
           headers: {
             'Authorization': `Bearer ${session.user.token}`,
           },
@@ -105,7 +105,7 @@ export default function ProfessionalDetails() {
       let res;
       if (professionalId) {
         // Update existing
-        res = await fetch(`http://api.mindssparsh.com/api/professional/${professionalId}`, {
+        res = await fetch(`https://api.mindssparsh.com/api/professional/${professionalId}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -115,7 +115,7 @@ export default function ProfessionalDetails() {
         });
       } else {
         // Create new
-        res = await fetch("http://api.mindssparsh.com/api/professional", {
+        res = await fetch("https://api.mindssparsh.com/api/professional", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

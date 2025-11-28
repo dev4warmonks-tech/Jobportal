@@ -9,7 +9,7 @@ export default function ExpectedCTCPage() {
   const [editItem, setEditItem] = useState(null);
 
   const loadCTCs = async () => {
-    const res = await fetch(`http://api.mindssparsh.com/api/expected-ctc`);
+    const res = await fetch(`https://api.mindssparsh.com/api/expected-ctc`);
     const data = await res.json();
     setCtcs(data);
   };

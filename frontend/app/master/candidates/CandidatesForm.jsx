@@ -15,8 +15,8 @@ export default function CandidatesForm({ editItem, setEditItem, reload }) {
     try {
       const method = editItem ? "PUT" : "POST";
       const url = editItem
-        ? `http://api.mindssparsh.com/api/candidates/${editItem._id}`
-        : `http://api.mindssparsh.com/api/candidates`;
+        ? `https://api.mindssparsh.com/api/candidates/${editItem._id}`
+        : `https://api.mindssparsh.com/api/candidates`;
 
       const res = await fetch(url, {
         method,
