@@ -28,7 +28,7 @@ export default function Home() {
   const [applying, setApplying] = useState(false);
   const [applicationMessage, setApplicationMessage] = useState('');
 
-  const BACKEND_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://api.mindssparsh.com';
+  const BACKEND_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://api.mindssparsh.com';
 
   // const [showLogin, setShowLogin] = useState(true);
   const [showLogin, setShowLogin] = useState(false);
