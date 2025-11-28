@@ -1,21 +1,28 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function DateFilterForm({ editItem, setEditItem, reload }) {
   const [form, setForm] = useState({
-    jobExperience: "",
+    sortByDate: "",
     is_active: true,
   });
+
+  const inputRef = useRef(null);
 
   useEffect(() => {
     if (editItem) {
       setForm({
-        jobExperience: editItem.jobExperience || "",
+        sortByDate: editItem.sortByDate || "",
         is_active: editItem.is_active ?? true,
       });
+      // Focus the input when editing
+      if (inputRef.current) {
+        inputRef.current.focus();
+        inputRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
     } else {
-      setForm({ jobExperience: "", is_active: true });
+      setForm({ sortByDate: "", is_active: true });
     }
   }, [editItem]);
 
@@ -29,8 +36,8 @@ export default function DateFilterForm({ editItem, setEditItem, reload }) {
     const method = editItem ? "PUT" : "POST";
 
     const url = editItem
-      ? `http://localhost:5000/api/joblocation/${editItem._id}`
-      : `http://localhost:5000/api/joblocation`;
+      ? `http://localhost:5000/api/sort-by-dates/${editItem._id}`
+      : `http://localhost:5000/api/sort-by-dates`;
 
     try {
       const res = await fetch(url, {
@@ -48,11 +55,12 @@ export default function DateFilterForm({ editItem, setEditItem, reload }) {
 
       alert(editItem ? "Updated Successfully" : "Added Successfully");
 
-      setForm({ jobExperience: "", is_active: true });
+      setForm({ sortByDate: "", is_active: true });
       setEditItem(null);
       reload();
     } catch (err) {
-      alert("Error: " + err.message);
+      // alert("Error: " + err.message);
+      alert("Data Exist");
     }
   };
 
@@ -62,7 +70,7 @@ export default function DateFilterForm({ editItem, setEditItem, reload }) {
       className="bg-white p-6 rounded shadow mx-auto"
     >
       <h2 className="text-xl font-bold mb-4">
-        {editItem ? "Edit Date Filter" : "Add Date Filter"}
+        {editItem ? "Edit Sort By Date" : "Add Sort By Date"}
       </h2>
 
       <div className="flex flex-col md:flex-row gap-6">
@@ -70,9 +78,10 @@ export default function DateFilterForm({ editItem, setEditItem, reload }) {
           <label className="block mb-1 font-medium">Sort By Date</label>
           <input
             type="text"
-            name="jobExperience"
-            value={form.jobExperience}
+            name="sortByDate"
+            value={form.sortByDate}
             onChange={handleChange}
+            ref={inputRef}
             className="w-full p-2 rounded bg-[#CCE9F2] border"
             required
           />

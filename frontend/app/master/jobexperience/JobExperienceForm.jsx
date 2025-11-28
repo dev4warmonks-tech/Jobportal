@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function JobExperienceForm({ editItem, setEditItem, reload }) {
   const [form, setForm] = useState({
@@ -8,12 +8,19 @@ export default function JobExperienceForm({ editItem, setEditItem, reload }) {
     is_active: true,
   });
 
+  const inputRef = useRef(null);
+
   useEffect(() => {
     if (editItem) {
       setForm({
         jobExperience: editItem.jobExperience || "",
         is_active: editItem.is_active ?? true,
       });
+      // Focus the input when editing
+      if (inputRef.current) {
+        inputRef.current.focus();
+        inputRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
     } else {
       setForm({ jobExperience: "", is_active: true });
     }
@@ -29,8 +36,8 @@ export default function JobExperienceForm({ editItem, setEditItem, reload }) {
     const method = editItem ? "PUT" : "POST";
 
     const url = editItem
-      ? `http://localhost:5000/api/joblocation/${editItem._id}`
-      : `http://localhost:5000/api/joblocation`;
+      ? `http://localhost:5000/api/job-experiences/${editItem._id}`
+      : `http://localhost:5000/api/job-experiences`;
 
     try {
       const res = await fetch(url, {
@@ -52,7 +59,8 @@ export default function JobExperienceForm({ editItem, setEditItem, reload }) {
       setEditItem(null);
       reload();
     } catch (err) {
-      alert("Error: " + err.message);
+      // alert("Error: " + err.message);
+      alert("Data Exist");
     }
   };
 
@@ -73,6 +81,7 @@ export default function JobExperienceForm({ editItem, setEditItem, reload }) {
             name="jobExperience"
             value={form.jobExperience}
             onChange={handleChange}
+            ref={inputRef}
             className="w-full p-2 rounded bg-[#CCE9F2] border"
             required
           />

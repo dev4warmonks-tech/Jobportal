@@ -4,7 +4,7 @@ export default function JobCategoryList({ categories, setEditItem, reload }) {
   const handleDelete = async (id) => {
     if (!confirm("Are you sure?")) return;
 
-    const res = await fetch(`http://localhost:5000/api/jobcategory/${id}`, {
+    const res = await fetch(`http://localhost:5000/api/job-categories/${id}`, {
       method: "DELETE",
     });
 
@@ -18,7 +18,7 @@ export default function JobCategoryList({ categories, setEditItem, reload }) {
     <div className="mt-10 bg-white p-6 rounded shadow">
       <h2 className="text-xl font-bold mb-4">Job Categories</h2>
 
-      <table className="w-full border">
+      <table className="w-full border border-collapse">
         <thead className="bg-gray-200">
           <tr>
             <th className="p-2 border">Category</th>
@@ -31,23 +31,26 @@ export default function JobCategoryList({ categories, setEditItem, reload }) {
           {categories.map((cat) => (
             <tr key={cat._id}>
               <td className="p-2 border">{cat.jobCategory}</td>
-              <td className="p-2 border">
-                {cat.is_active ? "Yes" : "No"}
-              </td>
-              <td className="p-2 border flex gap-3">
-                <button
-                  className="px-3 py-1 bg-blue-600 text-white rounded"
-                  onClick={() => setEditItem(cat)}
+              <td className="p-2 border">{cat.is_active ? "Yes" : "No"}</td>
+              <td className="p-2 border-t flex gap-3 justify-center">
+                
+                {/* Edit Icon */}
+                <button onClick={() => setEditItem(cat)}
+                  className="p-1.5 bg-black hover:bg-gray-900 text-white rounded-full shadow"
+                  title="Edit"
                 >
-                  Edit
+                   ✏️
                 </button>
 
+                {/* Delete Icon */}
                 <button
-                  className="px-3 py-1 bg-red-600 text-white rounded"
                   onClick={() => handleDelete(cat._id)}
+                  className="p-2 rounded hover:bg-gray-100 transition"
+                  title="Delete"
                 >
-                  Delete
+                   🗑️
                 </button>
+
               </td>
             </tr>
           ))}

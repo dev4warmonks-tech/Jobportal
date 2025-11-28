@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
 import JobExperienceForm from "./JobExperienceForm";
 import JobExperienceList from "./JobExperienceList";
 import { useState, useEffect } from "react";
 
 export default function JobExperiencePage() {
-  const [experience, setCategories] = useState([]);
+  const [experience, setExperience] = useState([]);
   const [editItem, setEditItem] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -15,13 +15,13 @@ export default function JobExperiencePage() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`http://localhost:5000/api/jobcategory`);
+      const res = await fetch(`http://localhost:5000/api/job-experiences`);
       if (!res.ok) {
         const errData = await res.json();
         throw new Error(errData.error || "Failed to load categories");
       }
       const data = await res.json();
-      setCategories(data);
+      setExperience(data);
     } catch (err) {
     //   console.error(err);
       setError(err.message);

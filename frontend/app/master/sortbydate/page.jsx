@@ -1,27 +1,27 @@
-"use client";
+'use client';
 
 import DateFilterForm from "./DateFilterForm";
 import DateList from "./DateList";
 import { useState, useEffect } from "react";
 
-export default function sortbyDatePage() {
-  const [datelist, setCategories] = useState([]);
+export default function SortByDatePage() {
+  const [datelist, setDateList] = useState([]);
   const [editItem, setEditItem] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   // Fetch categories from backend
-  const loadExperience = async () => {
+  const loadDate = async () => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`http://localhost:5000/api/jobcategory`);
+      const res = await fetch(`http://localhost:5000/api/sort-by-dates`);
       if (!res.ok) {
         const errData = await res.json();
         throw new Error(errData.error || "Failed to load categories");
       }
       const data = await res.json();
-      setCategories(data);
+      setDateList(data);
     } catch (err) {
     //   console.error(err);
       setError(err.message);
@@ -31,7 +31,7 @@ export default function sortbyDatePage() {
   };
 
   useEffect(() => {
-    loadExperience();
+    loadDate();
   }, []);
 
   return (
@@ -41,7 +41,7 @@ export default function sortbyDatePage() {
       <DateFilterForm
         editItem={editItem}
         setEditItem={setEditItem}
-        reload={loadExperience}
+        reload={loadDate}
       />
 
       {loading && <p className="mt-4">Loading ...</p>}
@@ -50,7 +50,7 @@ export default function sortbyDatePage() {
       <DateList
         datelist={datelist}
         setEditItem={setEditItem}
-        reload={loadExperience}
+        reload={loadDate}
       />
     </div>
   );

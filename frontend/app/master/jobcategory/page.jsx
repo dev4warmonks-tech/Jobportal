@@ -15,7 +15,7 @@ export default function JobCategoryPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`http://localhost:5000/api/jobcategory`);
+      const res = await fetch(`http://localhost:5000/api/job-categories`);
       if (!res.ok) {
         const errData = await res.json();
         throw new Error(errData.error || "Failed to load categories");

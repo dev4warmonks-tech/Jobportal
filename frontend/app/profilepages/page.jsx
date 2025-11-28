@@ -1,7 +1,12 @@
-
 "use client";
-import ProfilePage from "./profilepage"; // use exact filename
+
+import { SessionProvider } from "next-auth/react";
+import ProfilePage from "./profilepage";
 
 export default function Page() {
-  return <ProfilePage />;
+  return (
+    <SessionProvider>
+      <ProfilePage />
+    </SessionProvider>
+  );
 }

@@ -4,6 +4,8 @@ import BasicDetails from "./BasicDetails";
 import ProfessionalDetails from "./ProfessionalDetails";
 import AppliedJobs from "./AppliedJobs";
 import Topbar from "../components/topbar/page";
+import { SessionProvider } from "next-auth/react";
+
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("basic");
@@ -30,7 +32,9 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-[#E2F4FA]">
       {/* Topbar */}
-      <Topbar />
+      <SessionProvider>
+        <Topbar />
+      </SessionProvider>
 
       {/* Main content with vertical tabs */}
       <div className="flex flex-col md:flex-row p-4 md:p-6 mt-6">

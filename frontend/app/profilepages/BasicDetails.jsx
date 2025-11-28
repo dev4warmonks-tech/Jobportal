@@ -1,7 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 
 export default function BasicDetails() {
+  const { data: session } = useSession();
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -10,70 +12,63 @@ export default function BasicDetails() {
     subscriptionEmail: "",
   });
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch user data on component mount
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!session?.user?.id) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:5000/api/users/${session.user.id}`, {
+          headers: {
+            'Authorization': `Bearer ${session.user.token}`,
+          },
+        });
+
+        if (response.ok) {
+          const userData = await response.json();
+          setForm({
+            firstName: userData.firstName || "",
+            lastName: userData.lastName || "",
+            email: userData.email || "",
+            contact: userData.mobile || "",
+            subscriptionEmail: userData.subscription_email || "",
+          });
+          setIsSubscribed(userData.isSubscribed || false);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [session]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   if (form.subscriptionEmail) {
-  //     setIsSubscribed(true);
-  //   }
-  //   console.log("Form Submitted:", form);
-  // };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (form.subscriptionEmail) setIsSubscribed(true);
-
-    try {
-      const res = await fetch("http://localhost:5000/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-
-      if (!res.ok) throw new Error("Failed to save data");
-
-      const data = await res.json();
-      console.log("Saved to DB:", data);
-      alert("Your details have been saved!");
-    } catch (err) {
-      console.error(err);
-      alert("Failed to save data.");
+    if (form.subscriptionEmail) {
+      setIsSubscribed(true);
     }
+    console.log("Form Submitted:", form);
   };
 
-
-    // const handleSubmit = async (e) => {
-    //   e.preventDefault();
-
-    //   // if (!userId) {
-    //   //   alert("No user ID found. Please log in first.");
-    //   //   return;
-    //   // }
-
-    //   if (form.subscriptionEmail) setIsSubscribed(true);
-
-    //   try {
-    //     const res = await fetch("http://localhost:5000/api/users", {
-    //       method: "PUT",
-    //       headers: { "Content-Type": "application/json" },
-    //       body: JSON.stringify(form),
-    //     });
-
-    //     if (!res.ok) throw new Error("Failed to save data");
-
-    //     const data = await res.json();
-    //     console.log("Saved to DB:", data);
-    //     alert("Your details have been saved!");
-    //   } catch (err) {
-    //     console.error(err);
-    //     alert("Failed to save data.");
-    //   }
-    // };
+  if (loading) {
+    return (
+      <div className="mx-auto bg-[#E2F4FA] min-h-screen p-4 md:p-8 flex items-center justify-center">
+        <p className="text-lg">Loading your profile...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto bg-[#E2F4FA] min-h-screen p-4 md:p-8">

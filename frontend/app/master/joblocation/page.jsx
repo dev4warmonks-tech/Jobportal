@@ -4,8 +4,8 @@ import JobLocationForm from "./JobLocationForm";
 import JobLocationList from "./JobLocationList";
 import { useState, useEffect } from "react";
 
-export default function JobCategoryPage() {
-  const [locations, setCategories] = useState([]);
+export default function JobLocationPage() {
+  const [locations, setLocations] = useState([]);
   const [editItem, setEditItem] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -15,13 +15,13 @@ export default function JobCategoryPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`http://localhost:5000/api/jobcategory`);
+      const res = await fetch(`http://localhost:5000/api/job-locations`);
       if (!res.ok) {
         const errData = await res.json();
-        throw new Error(errData.error || "Failed to load categories");
+        throw new Error(errData.error || "Failed to load locations");
       }
       const data = await res.json();
-      setCategories(data);
+      setLocations(data);
     } catch (err) {
     //   console.error(err);
       setError(err.message);

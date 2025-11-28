@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
 export default function JobExperienceList({ experience, setEditItem, reload }) {
   const handleDelete = async (id) => {
     if (!confirm("Are you sure?")) return;
 
-    const res = await fetch(`http://localhost:5000/api/jobcategory/${id}`, {
+    const res = await fetch(`http://localhost:5000/api/job-experiences/${id}`, {
       method: "DELETE",
     });
 
@@ -30,23 +30,27 @@ export default function JobExperienceList({ experience, setEditItem, reload }) {
         <tbody>
           {experience.map((cat) => (
             <tr key={cat._id}>
-              <td className="p-2 border">{cat.jobCategory}</td>
+              <td className="p-2 border">{cat.jobExperience}</td>
               <td className="p-2 border">
                 {cat.is_active ? "Yes" : "No"}
               </td>
               <td className="p-2 border flex gap-3">
-                <button
-                  className="px-3 py-1 bg-blue-600 text-white rounded"
-                  onClick={() => setEditItem(cat)}
+
+                {/* Edit Icon */}
+                <button onClick={() => setEditItem(cat)}
+                  className="p-1.5 bg-black hover:bg-gray-900 text-white rounded-full shadow"
+                  title="Edit"
                 >
-                  Edit
+                   ✏️
                 </button>
 
+                {/* Delete Icon */}
                 <button
-                  className="px-3 py-1 bg-red-600 text-white rounded"
                   onClick={() => handleDelete(cat._id)}
+                  className="p-2 rounded hover:bg-gray-100 transition"
+                  title="Delete"
                 >
-                  Delete
+                   🗑️
                 </button>
               </td>
             </tr>

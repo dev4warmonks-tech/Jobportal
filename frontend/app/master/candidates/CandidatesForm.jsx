@@ -1,0 +1,81 @@
+"use client";
+
+import { useState } from "react";
+
+export default function CandidatesForm({ editItem, setEditItem, reload }) {
+  const [formData, setFormData] = useState(editItem || { name: "", email: "", skills: "" });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const method = editItem ? "PUT" : "POST";
+      const url = editItem
+        ? `http://localhost:5000/api/candidates/${editItem._id}`
+        : `http://localhost:5000/api/candidates`;
+
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) throw new Error("Failed to save candidate");
+      setFormData({ name: "", email: "", skills: "" });
+      setEditItem(null);
+      reload();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow mb-6">
+      <input
+        type="text"
+        name="name"
+        placeholder="Full Name"
+        value={formData.name}
+        onChange={handleChange}
+        className="w-full p-2 border mb-3 rounded"
+        required
+      />
+      <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        value={formData.email}
+        onChange={handleChange}
+        className="w-full p-2 border mb-3 rounded"
+        required
+      />
+      <textarea
+        name="skills"
+        placeholder="Skills (comma-separated)"
+        value={formData.skills}
+        onChange={handleChange}
+        className="w-full p-2 border mb-3 rounded"
+        rows="4"
+      />
+      <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        {editItem ? "Update" : "Add"} Candidate
+      </button>
+      {editItem && (
+        <button
+          type="button"
+          onClick={() => {
+            setEditItem(null);
+            setFormData({ name: "", email: "", skills: "" });
+          }}
+          className="ml-2 bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+        >
+          Cancel
+        </button>
+      )}
+    </form>
+  );
+}

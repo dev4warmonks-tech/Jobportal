@@ -1,21 +1,28 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function JobLocationForm({ editItem, setEditItem, reload }) {
   const [form, setForm] = useState({
-    jobLocation: "",
+    location: "",
     is_active: true,
   });
+
+  const inputRef = useRef(null);
 
   useEffect(() => {
     if (editItem) {
       setForm({
-        jobLocation: editItem.jobLocation || "",
+        location: editItem.location || "",
         is_active: editItem.is_active ?? true,
       });
+      // Focus the input when editing
+      if (inputRef.current) {
+        inputRef.current.focus();
+        inputRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
     } else {
-      setForm({ jobLocation: "", is_active: true });
+      setForm({ location: "", is_active: true });
     }
   }, [editItem]);
 
@@ -27,10 +34,9 @@ export default function JobLocationForm({ editItem, setEditItem, reload }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = editItem ? "PUT" : "POST";
-
     const url = editItem
-      ? `http://localhost:5000/api/joblocation/${editItem._id}`
-      : `http://localhost:5000/api/joblocation`;
+      ? `http://localhost:5000/api/job-locations/${editItem._id}`
+      : `http://localhost:5000/api/job-locations`;
 
     try {
       const res = await fetch(url, {
@@ -40,19 +46,16 @@ export default function JobLocationForm({ editItem, setEditItem, reload }) {
       });
 
       if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || "Something went wrong");
+        throw new Error("Something went wrong");
       }
 
-      await res.json();
-
       alert(editItem ? "Updated Successfully" : "Added Successfully");
-
-      setForm({ jobLocation: "", is_active: true });
+      setForm({ location: "", is_active: true });
       setEditItem(null);
       reload();
-    } catch (err) {
-      alert("Error: " + err.message);
+    } catch (error) {
+      // alert("Error: " + error.message);
+      alert("Location already exists");
     }
   };
 
@@ -70,9 +73,10 @@ export default function JobLocationForm({ editItem, setEditItem, reload }) {
           <label className="block mb-1 font-medium">Job Location</label>
           <input
             type="text"
-            name="jobCategory"
-            value={form.jobCategory}
+            name="location"
+            value={form.location}
             onChange={handleChange}
+            ref={inputRef}
             className="w-full p-2 rounded bg-[#CCE9F2] border"
             required
           />

@@ -1,6 +1,4 @@
-"use client";
-
-const API_URL = "https://api.mindssparsh.com/api/jobs";
+const API_URL = "http://localhost:5000/api/jobs";
 
 export const getJobs = async () => await fetch(API_URL).then(res => res.json());
 export const getJob = async (id) => await fetch(`${API_URL}/${id}`).then(res => res.json());
@@ -22,6 +20,5 @@ export const updateJob = async (id, job) => {
 };
 
 export const deleteJob = async (id) => {
-  alert('df');
   await fetch(`${API_URL}/${id}`, { method: "DELETE" });
 };

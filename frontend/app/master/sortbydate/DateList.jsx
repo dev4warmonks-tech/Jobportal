@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
 export default function DateList({ datelist, setEditItem, reload }) {
   const handleDelete = async (id) => {
     if (!confirm("Are you sure?")) return;
 
-    const res = await fetch(`http://localhost:5000/api/jobcategory/${id}`, {
+    const res = await fetch(`http://localhost:5000/api/sort-by-dates/${id}`, {
       method: "DELETE",
     });
 
@@ -16,37 +16,40 @@ export default function DateList({ datelist, setEditItem, reload }) {
 
   return (
     <div className="mt-10 bg-white p-6 rounded shadow">
-      <h2 className="text-xl font-bold mb-4">Sort by date</h2>
+      <h2 className="text-xl font-bold mb-4">Sort By Date</h2>
 
       <table className="w-full border">
         <thead className="bg-gray-200">
           <tr>
-            <th className="p-2 border">Sort by date</th>
+            <th className="p-2 border">Sort By Date</th>
             <th className="p-2 border">Active</th>
             <th className="p-2 border">Actions</th>
           </tr>
         </thead>
 
         <tbody>
-          {datelist.map((cat) => (
-            <tr key={cat._id}>
-              <td className="p-2 border">{cat.jobCategory}</td>
+          {datelist.map((date) => (
+            <tr key={date._id}>
+              <td className="p-2 border">{date.sortByDate}</td>
               <td className="p-2 border">
-                {cat.is_active ? "Yes" : "No"}
+                {date.is_active ? "Yes" : "No"}
               </td>
               <td className="p-2 border flex gap-3">
-                <button
-                  className="px-3 py-1 bg-blue-600 text-white rounded"
-                  onClick={() => setEditItem(cat)}
+                {/* Edit Icon */}
+                <button onClick={() => setEditItem(date)}
+                  className="p-1.5 bg-black hover:bg-gray-900 text-white rounded-full shadow"
+                  title="Edit"
                 >
-                  Edit
+                   ✏️
                 </button>
 
+                {/* Delete Icon */}
                 <button
-                  className="px-3 py-1 bg-red-600 text-white rounded"
-                  onClick={() => handleDelete(cat._id)}
+                  onClick={() => handleDelete(date._id)}
+                  className="p-2 rounded hover:bg-gray-100 transition"
+                  title="Delete"
                 >
-                  Delete
+                   🗑️
                 </button>
               </td>
             </tr>

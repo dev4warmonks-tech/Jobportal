@@ -1,10 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useSession } from 'next-auth/react';
 import { getJobs } from "./api";
 import Modal from "./components/Modal/page";
+import LoginPopup from "./components/LoginPopup";
+import RegisterPopup from "./components/RegisterPopup";
+import EmployerRegisterPopup from "./components/EmployerRegisterPopup";
+import OtpPopup from "./components/OtpPopup";
 
 
-export default function Page() {
+export default function Home() {
   const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
@@ -13,10 +18,185 @@ export default function Page() {
 
   const [open, setOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
+  const { data: session } = useSession();
+
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+
+  const [searchInput, setSearchInput] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+  const [applying, setApplying] = useState(false);
+  const [applicationMessage, setApplicationMessage] = useState('');
+
+  const BACKEND_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+
+  // const [showLogin, setShowLogin] = useState(true);
+  const [showLogin, setShowLogin] = useState(false);
+  const [registerType, setRegisterType] = useState(null); // 'candidate' | 'employer' | null
+
+  const [otpData, setOtpData] = useState(null);
+
+  // const handleOtpScreen = (data) => {
+  //   setOtpData(data); // store the data for OTP verification
+  //   setRegisterType('otp'); // you can conditionally render OTP popup
+  //   setShowLogin(false); // close login if open
+  // };
+
+  const handleOtpScreen = (data, type) => {
+    setOtpData(data);
+    setRegisterType(type === 'employer' ? 'otp-employer' : 'otp-candidate');
+    setShowLogin(false);
+  };
+
+  const handleRegister = (type) => {
+    console.log("User type selected:", type);
+    setRegisterType(type); // set the type
+    setShowLogin(false);   // close login popup
+  };
+
+  const handleBackToLogin = () => {
+    setShowLogin(true);
+    setRegisterType(null);
+  };
+
+  useEffect(() => {
+    if (session?.user?.email) {
+      setNewsletterEmail(session.user.email);
+      // check subscription
+      fetch(`${BACKEND_BASE}/api/subscriptions?email=${encodeURIComponent(session.user.email)}`)
+        .then((r) => r.json())
+        .then((data) => {
+          if (data?.exists) setSubscribed(true);
+        })
+        .catch((e) => console.error('check subscription error', e));
+    }
+  }, [session]);
+
+  const handleSearchInput = (value) => {
+    setSearchInput(value);
+    if (value.trim() === '') {
+      setSuggestions([]);
+      return;
+    }
+
+    const filtered = jobs.filter((job) => {
+      const searchLower = value.toLowerCase();
+      return (
+        job.title?.toLowerCase().includes(searchLower) ||
+        job.company?.toLowerCase().includes(searchLower) ||
+        (Array.isArray(job.skills) &&
+          job.skills.some((skill) => skill.toLowerCase().includes(searchLower)))
+      );
+    });
+
+    setSuggestions(filtered.slice(0, 6)); // Show max 6 suggestions
+  };
+
+  const handleSuggestionClick = (job) => {
+    setSearchInput(job.title);
+    setSuggestions([]);
+    setSelectedJob(job);
+    setOpen(true);
+  };
+
+  const handleApply = async () => {
+    // Check if user is logged in
+    if (!session?.user?.id) {
+      alert('Please log in to apply for jobs');
+      setShowLogin(true);
+      return;
+    }
+
+    // Check if job is selected
+    if (!selectedJob?._id) {
+      alert('No job selected');
+      return;
+    }
+
+    setApplying(true);
+    setApplicationMessage('');
+
+    try {
+      const response = await fetch(`${BACKEND_BASE}/api/applications`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.user.token}`
+        },
+        body: JSON.stringify({
+          userId: session.user.id,
+          jobId: selectedJob._id
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setApplicationMessage('Application submitted successfully!');
+        setTimeout(() => {
+          setOpen(false);
+          setApplicationMessage('');
+        }, 2000);
+      } else {
+        setApplicationMessage(data.message || 'Failed to submit application');
+      }
+    } catch (error) {
+      console.error('Application error:', error);
+      setApplicationMessage('An error occurred. Please try again.');
+    } finally {
+      setApplying(false);
+    }
+  };
 
 
   return (
     <main className="">
+
+      {/* Login Popup */}
+      {showLogin && (
+        <LoginPopup
+          onClose={() => setShowLogin(false)}
+          onRegister={handleRegister} // Pass type: candidate or employer
+        // login={login}
+        />
+      )}
+
+      {/* Registration Popup */}
+      {registerType === 'candidate' && !otpData && (
+        <RegisterPopup
+          onClose={() => setRegisterType(null)}
+          onOtpScreen={handleOtpScreen}
+          onLogin={handleBackToLogin}
+        />
+      )}
+
+      {registerType === 'employer' && !otpData && (
+        <EmployerRegisterPopup
+          onClose={() => setRegisterType(null)}
+          onOtpScreen={handleOtpScreen}
+          onLogin={handleBackToLogin}
+        />
+      )}
+
+      {/* OTP for Candidate */}
+      {registerType === 'otp-candidate' && otpData && (
+        <OtpPopup
+          onClose={() => { setRegisterType(null); setOtpData(null); }}
+          otpData={otpData}
+          onLogin={handleBackToLogin}
+        />
+      )}
+
+      {/* OTP for Employer */}
+      {registerType === 'otp-employer' && otpData && (
+        <OtpPopup
+          onClose={() => { setRegisterType(null); setOtpData(null); }}
+          otpData={otpData}
+          onLogin={handleBackToLogin}
+        />
+      )}
+
+
       {/* HERO SECTION */}
       <section className="p-[10px] md:p-[50px] items-center bg-[#F5F9FB]">
         <h1 className="text-center text-[30px] md:text-[40px] font-bold mb-[16px]">
@@ -24,16 +204,47 @@ export default function Page() {
         </h1>
 
         {/* Search Bar */}
-        <div className="w-full max-w-3xl mx-auto flex items-center gap-3 bg-[#E2F4FA] border border-[#272727] rounded-full pl-[25px] pr-[5px] h-[54px]">
-          <input
-            type="text"
-            placeholder="Search by job title, skills, or company"
-            className="flex-1 bg-transparent outline-none text-black placeholder:text-gray-500"
-          />
+        <div className="w-full max-w-3xl mx-auto relative">
+          <div className="flex items-center gap-3 bg-[#E2F4FA] border border-[#272727] rounded-full pl-[25px] pr-[5px] h-[54px]">
+            <input
+              type="text"
+              placeholder="Search by job title, skills, or company"
+              value={searchInput}
+              onChange={(e) => handleSearchInput(e.target.value)}
+              className="flex-1 bg-transparent outline-none text-black placeholder:text-gray-500"
+            />
 
-          <button className="bg-black text-white px-[20px] h-[44px] text-[12px] md:text-[18px] leading-[20px] md:leading-[26px] rounded-full">
-            Find your job
-          </button>
+            <button className="bg-black text-white px-[20px] h-[44px] text-[12px] md:text-[18px] leading-[20px] md:leading-[26px] rounded-full">
+              Find your job
+            </button>
+          </div>
+
+          {/* Suggestions Dropdown */}
+          {suggestions.length > 0 && (
+            <div className="absolute top-full left-0 right-0 bg-white border border-[#272727] rounded-lg shadow-lg mt-2 z-50 max-w-3xl mx-auto">
+              {suggestions.map((job) => (
+                <div
+                  key={job._id}
+                  onClick={() => handleSuggestionClick(job)}
+                  className="p-3 hover:bg-[#E2F4FA] cursor-pointer border-b last:border-b-0"
+                >
+                  <p className="font-semibold text-black">{job.title}</p>
+                  <p className="text-sm text-gray-600">
+                    {job.company} · {job.location}
+                  </p>
+                  {Array.isArray(job.skills) && job.skills.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {job.skills.slice(0, 3).map((skill) => (
+                        <span key={skill} className="text-xs bg-black text-white rounded-full px-2 py-1">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Job Categories (Responsive) */}
@@ -125,8 +336,8 @@ export default function Page() {
                   className="w-[60px] h-[60px] object-cover rounded-md"
                 />
 
-                <div className="ml-4 flex flex-col md:flex-row justify-between">
-                  <div className="w-full md:w-1/2">
+                <div className="ml-4 flex flex-col md:flex-row">
+                  <div className="w-full md:w-auto">
                     <h4 className="font-semibold text-[18px] leading-[26px] font-['Poppins']">
                       {job.title}
                     </h4>
@@ -136,17 +347,25 @@ export default function Page() {
                     </p>
                   </div>
 
-                  <div className="w-full md:w-1/2">
+                  <div className="w-full md:w-auto ml-0 md:ml-4">
                     <p className="text-[12px] leading-[22px]">
                       <span>{job.location}</span> · <span>5hr</span>
                     </p>
-                    <div className="flex gap-[16px] mt-1">
-                      <span className="bg-black text-[12px] leading-[22px] text-white rounded-full px-[16px] py-[8px]">
-                        Python
-                      </span>
-                      <span className="bg-black text-[12px] leading-[22px] text-white rounded-full px-[16px] py-[8px]">
-                        AWS
-                      </span>
+                    <div className="flex  flex-wrap gap-[8px] mt-1">
+                      {Array.isArray(job.skills) && job.skills.map((skill) => (
+
+                        <span
+                          key={skill}
+                          className="bg-black text-[10px] leading-[20px] text-white rounded-full px-[10px] py-[5px]"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleSkill(skill);
+                          }}
+                        >
+                          {skill} ✕
+                        </span>
+                      ))}
+
                     </div>
                   </div>
                 </div>
@@ -175,7 +394,7 @@ export default function Page() {
           Featured Companies
         </h3>
 
-        <div className="flex flex-wrap gap-1 md:gap-6">
+        <div className="flex flex-wrap items-center justify-center gap-1 md:gap-6">
           {[
             "alliance.png",
             "ustglobal.png",
@@ -214,15 +433,41 @@ export default function Page() {
             </p>
 
             <div className="w-full max-w-3xl mx-auto flex items-center gap-3 bg-[#E2F4FA] border border-[#272727] rounded-full pl-[25px] pr-[5px] h-[54px]">
-              <input
-                type="text"
-                placeholder="Search by job title, skills, or company"
-                className="flex-1 bg-transparent outline-none text-black placeholder:text-gray-500"
-              />
+              {subscribed ? (
+                <div className="flex-1 text-black font-medium">Suscribed</div>
+              ) : (
+                <>
+                  <input
+                    type="text"
+                    placeholder="Enter your email address"
+                    value={newsletterEmail}
+                    onChange={(e) => setNewsletterEmail(e.target.value)}
+                    className="flex-1 bg-transparent outline-none text-black placeholder:text-gray-500"
+                  />
 
-              <button className="bg-black text-white px-[20px] h-[44px] text-[18px] leading-[26px] rounded-full">
-                Find your job
-              </button>
+                  <button
+                    onClick={async () => {
+                      try {
+                        const res = await fetch(`${BACKEND_BASE}/api/subscriptions`, {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ email: newsletterEmail, userId: session?.user?.id }),
+                        });
+                        if (res.ok) {
+                          setSubscribed(true);
+                        } else {
+                          console.error('subscribe failed');
+                        }
+                      } catch (err) {
+                        console.error(err);
+                      }
+                    }}
+                    className={`${newsletterEmail ? "bg-black disabled" : "bg-black"} bg-black text-white px-[20px] h-[44px] text-[15px] md:text-[18px] leading-[20px] md:leading-[26px] rounded-full`}
+                  >
+                    Suscribe Now
+                  </button>
+                </>
+              )}
             </div>
           </div>
 
@@ -285,22 +530,33 @@ export default function Page() {
           <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</li>
           <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</li>
         </ul>
+        {applicationMessage && (
+          <div className={`mb-4 p-3 rounded-lg text-center ${applicationMessage.includes('success')
+              ? 'bg-green-100 text-green-800'
+              : 'bg-red-100 text-red-800'
+            }`}>
+            {applicationMessage}
+          </div>
+        )}
+
         <div className="flex gap-3 justify-end">
           <button
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              setOpen(false);
+              setApplicationMessage('');
+            }}
             className="px-4 py-2 rounded-full border"
+            disabled={applying}
           >
             Cancel
           </button>
 
           <button
-            onClick={() => {
-              // your action
-              setOpen(false);
-            }}
-            className="px-4 py-2 rounded-full bg-black text-white"
+            onClick={handleApply}
+            className="px-4 py-2 rounded-full bg-black text-white disabled:bg-gray-400 disabled:cursor-not-allowed"
+            disabled={applying}
           >
-            Apply Now
+            {applying ? 'Applying...' : 'Apply Now'}
           </button>
         </div>
       </Modal>

@@ -41,8 +41,16 @@ export default function EditJob() {
   useEffect(() => {
     if (!id) return;
     getJob(id).then((data) => {
+      console.log("Fetched job data:", data); // Debugging
       setJob(data);
-      setSelected(data.skills || []);
+      if (Array.isArray(data.skills)) {
+        setSelected(data.skills);
+      } else if (typeof data.skills === 'string') {
+        // Handle case where skills might be saved as a comma-separated string
+        setSelected(data.skills.split(',').map(s => s.trim()));
+      } else {
+        setSelected([]);
+      }
     });
   }, [id]);
 
@@ -114,6 +122,28 @@ export default function EditJob() {
 
         <div className="flex gap-3">
           <div className="w-1/2">
+            <label className="block mb-1">Job Category</label>
+            <select name="jobcategory" value={job.jobcategory} onChange={handleChange}
+              className="w-full border rounded bg-[#CCE9F2] px-3 py-2">
+              <option value="ui">UI Designer</option>
+              <option value="ux">UX Designer</option>
+              <option value="laravel">Laravel Developer</option>
+            </select>
+          </div>
+
+          <div className="w-1/2">
+            <label className="block mb-1">Experience</label>
+            <select name="experience" value={job.experience} onChange={handleChange}
+              className="w-full border rounded bg-[#CCE9F2] px-3 py-2">
+              <option value="0-1">0-1</option>
+              <option value="1-2">1-2</option>
+              <option value="2-3">2-3</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="flex gap-3">
+          <div className="w-1/2">
             <label className="block mb-1">Mails</label>
             <input name="mails" value={job.mails} onChange={handleChange}
               className="w-full border rounded bg-[#CCE9F2] px-3 py-2" />
@@ -127,13 +157,16 @@ export default function EditJob() {
                 {selected.length === 0 &&
                   <span className="text-gray-500">Select skills</span>}
                 {selected.map(skill => (
-                  <span key={skill}
-                    className="bg-black text-white text-xs px-2 py-1 rounded-full"
+                  <span
+                    key={skill}
+                    className="flex items-center bg-black text-white text-xs px-2 py-1 rounded-full"
                     onClick={(e) => {
                       e.stopPropagation();
                       toggleSkill(skill);
-                    }}>
-                    {skill} ✕
+                    }}
+                  >
+                    {skill}
+                    <span className="ml-1 text-[10px]">✕</span>
                   </span>
                 ))}
               </div>

@@ -1,7 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 
 export default function ProfessionalDetails() {
+  const { data: session } = useSession();
   const [form, setForm] = useState({
     experiencelevel: "",
     highesteducation: "",
@@ -10,6 +12,60 @@ export default function ProfessionalDetails() {
     preferredjobtype: "",
     keySkills: [],
   });
+  const [professionalId, setProfessionalId] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const [experienceOptions, setExperienceOptions] = useState([]);
+
+  // Fetch experience options
+  useEffect(() => {
+    fetch("http://localhost:5000/api/job-experiences")
+      .then(res => res.json())
+      .then(data => {
+        setExperienceOptions(data);
+      })
+      .catch(err => console.error("Failed to fetch experience:", err));
+  }, []);
+
+  // Fetch existing professional details
+  useEffect(() => {
+    const fetchProfessionalData = async () => {
+      if (!session?.user?.id) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:5000/api/professional/user/${session.user.id}`, {
+          headers: {
+            'Authorization': `Bearer ${session.user.token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setForm({
+            experiencelevel: data.experienceLevel || "",
+            highesteducation: data.highestEducation || "",
+            currentcompany: data.currentCompany || "",
+            preferredindustry: data.preferredIndustry || "",
+            preferredjobtype: data.preferredJobType || "",
+            keySkills: data.keySkills || [],
+          });
+          setProfessionalId(data._id);
+        } else if (response.status === 404) {
+          // No professional details yet, that's okay
+          console.log("No professional details found for user");
+        }
+      } catch (error) {
+        console.error("Error fetching professional data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfessionalData();
+  }, [session]);
 
   const skillsOptions = ["JavaScript", "React", "Node.js", "Python", "Java", "SQL"];
 
@@ -27,40 +83,76 @@ export default function ProfessionalDetails() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   console.log("Form Submitted:", form);
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!session?.user?.id) {
+      alert("You must be logged in to save professional details");
+      return;
+    }
+
     const body = {
-      user_id: 1,  // Replace later with logged-in user ID
-      ...form
+      userId: session.user.id,
+      experienceLevel: form.experiencelevel,
+      highestEducation: form.highesteducation,
+      currentCompany: form.currentcompany,
+      preferredIndustry: form.preferredindustry,
+      preferredJobType: form.preferredjobtype,
+      keySkills: form.keySkills,
     };
 
     try {
-      const res = await fetch("http://localhost:5000/api/professional", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+      let res;
+      if (professionalId) {
+        // Update existing
+        res = await fetch(`http://localhost:5000/api/professional/${professionalId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${session.user.token}`
+          },
+          body: JSON.stringify(body),
+        });
+      } else {
+        // Create new
+        res = await fetch("http://localhost:5000/api/professional", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${session.user.token}`
+          },
+          body: JSON.stringify(body),
+        });
+      }
 
       const data = await res.json();
-      console.log("Saved:", data);
-      alert("Professional details saved!");
+
+      if (res.ok) {
+        setProfessionalId(data._id);
+        console.log("Saved:", data);
+        alert("Professional details saved successfully!");
+      } else {
+        alert(data.message || "Failed to save professional details");
+      }
     } catch (err) {
       console.error(err);
       alert("Failed to save professional details");
     }
   };
 
+  if (loading) {
+    return (
+      <div className="mx-auto bg-[#E2F4FA] min-h-screen p-4 md:p-8 flex items-center justify-center">
+        <p className="text-lg">Loading professional details...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto bg-[#E2F4FA] min-h-screen p-4 md:p-8">
       <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl mx-auto">
         {/* Experience & Education */}
-        <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex flex-col md:flex-row gap-4 text-black">
           <div className="flex-1">
             <label className="block font-medium mb-1">Your experience level</label>
             <select
@@ -71,8 +163,11 @@ export default function ProfessionalDetails() {
               required
             >
               <option value="">Select</option>
-              <option value="Fresher">Fresher</option>
-              <option value="Experienced">Experienced</option>
+              {experienceOptions.map((exp) => (
+                <option key={exp._id} value={exp.jobExperience}>
+                  {exp.jobExperience}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -93,7 +188,7 @@ export default function ProfessionalDetails() {
         </div>
 
         {/* Current Company & Preferred Industry */}
-        <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex flex-col md:flex-row gap-4 text-black">
           <div className="flex-1">
             <label className="block font-medium mb-1">Current company/employer</label>
             <input
@@ -124,7 +219,7 @@ export default function ProfessionalDetails() {
         </div>
 
         {/* Preferred Job Type */}
-        <div>
+        <div className="text-black">
           <label className="block font-medium mb-1">Job type you prefer</label>
           <select
             name="preferredjobtype"
@@ -141,53 +236,53 @@ export default function ProfessionalDetails() {
         </div>
 
         {/* Key Skills */}
-        <div>
-        <label className="block font-medium mb-1">Key skills and expertise</label>
+        <div className="text-black">
+          <label className="block font-medium mb-1">Key skills and expertise</label>
 
-        {/* Selected Skills */}
-        <div className="flex flex-wrap gap-2 mb-2">
+          {/* Selected Skills */}
+          <div className="flex flex-wrap gap-2 mb-2">
             {form.keySkills.map((skill) => (
-            <span
+              <span
                 key={skill}
                 className="flex items-center bg-black text-white px-2 py-1 rounded-full cursor-pointer"
-                onClick={() => handleRemoveSkill(skill)}  // remove on click
-            >
+                onClick={() => handleRemoveSkill(skill)}
+              >
                 {skill}
 
                 {/* Down Arrow Icon */}
                 <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-3 h-3 ml-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-3 h-3 ml-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
                 >
-                <path
+                  <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     d="M19 9l-7 7-7-7"
-                />
+                  />
                 </svg>
-            </span>
+              </span>
             ))}
-        </div>
+          </div>
 
-        {/* Skills Dropdown */}
-        <select
+          {/* Skills Dropdown */}
+          <select
             onChange={(e) => {
-            handleSelectSkill(e.target.value);
-            e.target.value = ""; // reset after selection
+              handleSelectSkill(e.target.value);
+              e.target.value = "";
             }}
             className="w-full border rounded bg-[#CCE9F2] px-3 py-2"
-        >
+          >
             <option value="">Select skill</option>
             {skillsOptions.map((skill) => (
-            <option key={skill} value={skill}>
+              <option key={skill} value={skill}>
                 {skill}
-            </option>
+              </option>
             ))}
-        </select>
+          </select>
         </div>
 
         {/* Submit Button */}
