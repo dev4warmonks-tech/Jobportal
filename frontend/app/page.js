@@ -211,19 +211,41 @@ export default function Home() {
 
         {/* Search Bar */}
         <div className="w-full max-w-3xl mx-auto relative">
-          <div className="flex items-center gap-3 bg-[#E2F4FA] border border-[#272727] rounded-full pl-[25px] pr-[5px] h-[54px]">
+          <div className="
+  relative 
+  bg-[#E2F4FA] border border-[#272727] 
+  rounded-full h-[54px] 
+  flex items-center
+  pl-6 pr-[110px]    <!-- space for button -->
+">
             <input
               type="text"
               placeholder="Search by job title, skills, or company"
               value={searchInput}
               onChange={(e) => handleSearchInput(e.target.value)}
-              className="flex-1 bg-transparent outline-none text-black placeholder:text-gray-500"
+              className="
+      w-full bg-transparent outline-none 
+      text-black placeholder:text-gray-500 
+      text-sm sm:text-base
+    "
             />
 
-            <button className="bg-black text-white px-[20px] h-[44px] text-[12px] md:text-[18px] leading-[20px] md:leading-[26px] rounded-full">
+            <button
+              className="
+      absolute right-2 top-1/2 -translate-y-1/2
+      bg-black text-white 
+      px-4 sm:px-6 
+      h-[40px] sm:h-[44px]
+      text-sm sm:text-[18px]
+      rounded-full 
+      whitespace-nowrap
+    "
+            >
               Find your job
             </button>
           </div>
+
+
 
           {/* Suggestions Dropdown */}
           {suggestions.length > 0 && (
@@ -437,44 +459,55 @@ export default function Home() {
             <p className="text-gray-600 mb-4">
               Subscribe to our newsletter and never miss an opportunity. Get the newest job listings and industry updates straight to your inbox.
             </p>
+            <div className="
+  relative 
+  bg-[#E2F4FA] border border-[#272727] 
+  rounded-full h-[54px] 
+  flex items-center
+  pl-6 pr-[110px]">
+              <input
+                type="text"
+                placeholder="Enter Your Email Address"
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
+                className="
+      w-full bg-transparent outline-none 
+      text-black placeholder:text-gray-500 
+      text-sm sm:text-base
+    "
+              />
 
-            <div className="w-full max-w-3xl mx-auto flex items-center gap-3 bg-[#E2F4FA] border border-[#272727] rounded-full pl-[25px] pr-[5px] h-[54px]">
-              {subscribed ? (
-                <div className="flex-1 text-black font-medium">Suscribed</div>
-              ) : (
-                <>
-                  <input
-                    type="text"
-                    placeholder="Enter your email address"
-                    value={newsletterEmail}
-                    onChange={(e) => setNewsletterEmail(e.target.value)}
-                    className="flex-1 bg-transparent outline-none text-black placeholder:text-gray-500"
-                  />
-
-                  <button
-                    onClick={async () => {
-                      try {
-                        const res = await fetch(`${BACKEND_BASE}/api/subscriptions`, {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ email: newsletterEmail, userId: session?.user?.id }),
-                        });
-                        if (res.ok) {
-                          setSubscribed(true);
-                        } else {
-                          console.error('subscribe failed');
-                        }
-                      } catch (err) {
-                        console.error(err);
-                      }
-                    }}
-                    className={`${newsletterEmail ? "bg-black disabled" : "bg-black"} bg-black text-white px-[20px] h-[44px] text-[15px] md:text-[18px] leading-[20px] md:leading-[26px] rounded-full`}
-                  >
-                    Suscribe Now
-                  </button>
-                </>
-              )}
+              <button
+                onClick={async () => {
+                  try {
+                    const res = await fetch(`${BACKEND_BASE}/api/subscriptions`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ email: newsletterEmail, userId: session?.user?.id }),
+                    });
+                    if (res.ok) {
+                      setSubscribed(true);
+                    } else {
+                      console.error('subscribe failed');
+                    }
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+                className="
+      absolute right-2 top-1/2 -translate-y-1/2
+      bg-black text-white 
+      px-4 sm:px-6 
+      h-[40px] sm:h-[44px]
+      text-sm sm:text-[18px]
+      rounded-full 
+      whitespace-nowrap
+    "
+              >
+                Suscribe Now
+              </button>
             </div>
+
           </div>
 
         </div>
