@@ -32,7 +32,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="w-full border-b border-gray-200 antialiased">
+      <nav className="w-full antialiased">
         <div className="mx-auto p-[10px] md:p-[50px] py-4 flex items-center justify-between">
 
           <div className="text-2xl font-semibold tracking-tight">
@@ -58,12 +58,12 @@ export default function Navbar() {
               </button>
             </div>
           ) : (
-            <div className="flex items-center md:space-x-4">
+            <div className="flex items-center space-x-2 md:space-x-4">
               <a href="#" onClick={openLogin} className="text-gray-600 hover:text-black font-medium text-[12px] md:text-[18px] leading-[20px] md:leading-[26px]">
                 Sign in / Register
               </a>
 
-              <button className="px-[5px] py-[3px] md:px-4 md:py-2 bg-black text-white text-[12px] md:text-[18px] leading-[20px] md:leading-[26px] rounded-full hover:bg-gray-800 transition">
+              <button className="px-[8px] py-[5px] md:px-4 md:py-2 bg-black text-white text-[12px] md:text-[18px] leading-[20px] md:leading-[26px] rounded-full hover:bg-gray-800 transition">
                 Post a job
               </button>
             </div>
