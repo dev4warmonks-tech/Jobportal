@@ -7,6 +7,7 @@ import LoginPopup from "./components/LoginPopup";
 import RegisterPopup from "./components/RegisterPopup";
 import EmployerRegisterPopup from "./components/EmployerRegisterPopup";
 import OtpPopup from "./components/OtpPopup";
+import TagsSlider from "./components/TagsSlider";
 
 
 export default function Home() {
@@ -211,7 +212,7 @@ export default function Home() {
 
 
       {/* HERO SECTION */}
-      <section className="p-[10px] md:p-[50px] mt-[30px] items-center">
+      <section className="p-[10px] md:p-[50px] mt-[30px] items-center relative">
         <h1 className="text-center text-[30px] md:text-[40px] font-bold mb-[16px]">
           Find your next tech job now!
         </h1>
@@ -251,36 +252,36 @@ export default function Home() {
               Find your job
             </button>
           </div>
-
-
-
-          {/* Suggestions Dropdown */}
-          {suggestions.length > 0 && (
-            <div className="absolute top-full left-0 right-0 bg-white border border-[#272727] rounded-lg shadow-lg mt-2 z-50 max-w-3xl mx-auto">
-              {suggestions.map((job) => (
-                <div
-                  key={job._id}
-                  onClick={() => handleSuggestionClick(job)}
-                  className="p-3 hover:bg-[#E2F4FA] cursor-pointer border-b last:border-b-0"
-                >
-                  <p className="font-semibold text-black">{job.title}</p>
-                  <p className="text-sm text-gray-600">
-                    {job.company} · {job.location}
-                  </p>
-                  {Array.isArray(job.skills) && job.skills.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {job.skills.slice(0, 3).map((skill) => (
-                        <span key={skill} className="text-xs bg-black text-white rounded-full px-2 py-1">
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
         </div>
+
+
+        {/* Suggestions Dropdown */}
+        {suggestions.length > 0 && (
+          <div className="absolute top-full left-0 right-0 bg-white border border-[#272727] rounded-lg shadow-lg mt-2 z-50 max-w-3xl mx-auto">
+            {suggestions.map((job) => (
+              <div
+                key={job._id}
+                onClick={() => handleSuggestionClick(job)}
+                className="p-3 hover:bg-[#E2F4FA] cursor-pointer border-b last:border-b-0"
+              >
+                <p className="font-semibold text-black">{job.title}</p>
+                <p className="text-sm text-gray-600">
+                  {job.company} · {job.location}
+                </p>
+                {Array.isArray(job.skills) && job.skills.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {job.skills.slice(0, 3).map((skill) => (
+                      <span key={skill} className="text-xs bg-black text-white rounded-full px-2 py-1">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+        <TagsSlider />
 
         {/* Job Categories (Responsive) */}
         {/* <div className="flex flex-wrap md:grid grid-cols-5 md:gap-[40px] pt-[20px] md:pt-[40px] md:px-[176px] md:justify-center">
@@ -343,16 +344,6 @@ export default function Home() {
 
 
         </div> */}
-        <div className="flex flex-wrap justify-center gap-3 mt-[50px]">
-          {tags.map((tag, i) => (
-            <span
-              key={i}
-              className="px-4 py-2 bg-[linear-gradient(to_bottom_right,_#EFF2F3_0%,_#EAFAFF_40%,_white_100%)] border border-[#DBDBDB] rounded-md text-sm cursor-pointer hover:bg-gray-100"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
 
       </section>
 
@@ -474,10 +465,11 @@ export default function Home() {
           </div>
 
           <div className="mt-8  mx-auto flex flex-col md:flex-row">
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600 mb-4 md:w-1/2">
               Subscribe to our newsletter and never miss an opportunity. Get the newest job listings and industry updates straight to your inbox.
             </p>
-            <div className="
+
+            <div className=" md:w-1/2
   relative 
   bg-[#E2F4FA] border border-[#272727] 
   rounded-full h-[54px] 

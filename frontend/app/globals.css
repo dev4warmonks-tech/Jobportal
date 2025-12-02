@@ -27,3 +27,70 @@ body {
 .font-poppins {
   font-family: "Poppins", sans-serif;
 }
+
+/* @keyframes marquee-left {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+
+.animate-marquee-left {
+  animation: marquee-left 20s linear infinite;
+}
+
+.animate-marquee-right {
+  animation: marquee-left 20s linear infinite reverse;
+}
+
+.animate-marquee-left:hover,
+.animate-marquee-right:hover {
+  animation-play-state: paused;
+} */
+
+.marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.marquee-content {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: marquee-left 25s linear infinite;
+}
+
+.marquee-content.reverse {
+  animation: marquee-right 25s linear infinite;
+}
+
+/* Left → Right (actually 100% of width scrolls) */
+@keyframes marquee-left {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Right → Left */
+@keyframes marquee-right {
+  0% {
+    transform: translateX(-50%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Pause on hover */
+.marquee-content:hover {
+  animation-play-state: paused;
+}
