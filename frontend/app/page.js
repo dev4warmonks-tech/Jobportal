@@ -36,6 +36,13 @@ export default function Home() {
 
   const [otpData, setOtpData] = useState(null);
 
+  const tags = [
+    "UI Designer", "UI Developer", "Frontend Developer", "Full Stack", "Mobile App Developer",
+    "UI Designer", "Cloud Engineer", "Data Scientist", "ML Engineer", "SOC Analyst", "Security Engineer",
+    "UX Designer", "Product Designer", "Manual Tester", "QA Engineer", "IT Support", "Network Engineer",
+    "Systems Admin", "AI Engineer", "AR/VR Developer"
+  ];
+
   // const handleOtpScreen = (data) => {
   //   setOtpData(data); // store the data for OTP verification
   //   setRegisterType('otp'); // you can conditionally render OTP popup
@@ -204,7 +211,7 @@ export default function Home() {
 
 
       {/* HERO SECTION */}
-      <section className="p-[10px] md:p-[50px] items-center">
+      <section className="p-[10px] md:p-[50px] mt-[30px] items-center">
         <h1 className="text-center text-[30px] md:text-[40px] font-bold mb-[16px]">
           Find your next tech job now!
         </h1>
@@ -276,7 +283,7 @@ export default function Home() {
         </div>
 
         {/* Job Categories (Responsive) */}
-        <div className="flex flex-wrap md:grid grid-cols-5 md:gap-[40px] pt-[20px] md:pt-[40px] md:px-[176px] md:justify-center">
+        {/* <div className="flex flex-wrap md:grid grid-cols-5 md:gap-[40px] pt-[20px] md:pt-[40px] md:px-[176px] md:justify-center">
 
           <div className="w-1/2 md:w-auto mt-[10px]" >
             <h5 className="font-bold text-[16px]">Job Category</h5>
@@ -335,7 +342,18 @@ export default function Home() {
           </div>
 
 
+        </div> */}
+        <div className="flex flex-wrap justify-center gap-3 mt-[50px]">
+          {tags.map((tag, i) => (
+            <span
+              key={i}
+              className="px-4 py-2 bg-[linear-gradient(to_bottom_right,_#EFF2F3_0%,_#EAFAFF_40%,_white_100%)] border border-[#DBDBDB] rounded-md text-sm cursor-pointer hover:bg-gray-100"
+            >
+              {tag}
+            </span>
+          ))}
         </div>
+
       </section>
 
       {/* LATEST JOBS */}

@@ -36,7 +36,7 @@ export default function Navbar() {
         <div className="mx-auto p-[10px] md:p-[50px] py-4 flex items-center justify-between">
 
           <div className="text-2xl font-semibold tracking-tight">
-            <span className="text-black">nexttecdddhie.</span>
+            <span className="text-black">nexttechie.</span>
           </div>
 
 
