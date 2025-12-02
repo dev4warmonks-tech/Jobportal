@@ -4,12 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from 'next-auth/react';
 import { useState, useEffect } from "react";
+import UserMenu from "./UserMenu";
 
-export default function Topbar() {
+export default function Topbar({ user }) {
   const pathname = usePathname();
   const profileImage = "/images/profile.jpg";
   const { data: session } = useSession();
-  const [userName, setUserName] = useState("");
+  const userName =
+    user?.firstName ||
+    user?.email ||
+    "User";
 
   useEffect(() => {
     const fetchUserName = async () => {
@@ -43,14 +47,15 @@ export default function Topbar() {
           <h2 className="text-2xl font-bold">techjobs</h2>
 
           {/* Profile circle */}
-          <div className="flex items-center space-x-3 rounded-full px-5 py-2">
-            <span className="font-normal">Hi, {userName || session?.user?.name || 'Guest'}</span>
+          {/* <div className="flex items-center space-x-3 rounded-full px-5 py-2">
+            <span className="font-normal">Hi, {userName || 'Guest'}</span>
             <img
               src={profileImage}
               alt="Profile"
               className="w-10 h-10 rounded-full object-cover border-2 border-black"
             />
-          </div>
+          </div> */}
+          <UserMenu user={user} profileImage={profileImage}/>
         </div>
 
         <div className="mt-5 px-4 bg-[#CCE9F2] p-5 ml-5 mr-5">

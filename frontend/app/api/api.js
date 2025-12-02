@@ -1,6 +1,7 @@
 const API_URL = "https://api.mindssparsh.com/api/jobs";
 const API_USERS_URL = "https://api.mindssparsh.com/api/users";      // for users
 const API_AUTH_URL = "https://api.mindssparsh.com/api/auth";        // unused currently
+const API_USERROLE_URL = "https://api.mindssparsh.com/api/user-roles";
 
 // ========================================
 // JOBS API
@@ -123,3 +124,14 @@ export async function registerEmployer(data) {
   });
   return res.json();
 }
+
+// ========================================
+// Get User Roles 
+// ========================================
+
+export const getUserRole = async () => {
+  const res = await fetch(`${API_USERROLE_URL}`);
+  if (!res.ok) throw new Error("Failed to fetch user roles");
+  return res.json(); // returns array of roles
+};
+

@@ -6,8 +6,9 @@ export default function BasicDetails() {
 
 
   useEffect(() => {
-    const storedUser = sessionStorage.getItem("user");
-
+    // const storedUser = sessionStorage.getItem("user");
+    const storedUser = localStorage.getItem("user");
+console.log(storedUser);
     if (!storedUser || storedUser === "undefined") return;
 
     const parsedUser = JSON.parse(storedUser);

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BasicDetails from "./BasicDetails";
 import ProfessionalDetails from "./ProfessionalDetails";
 import AppliedJobsView from "./AppliedJobs";
@@ -9,6 +9,18 @@ import { SessionProvider } from "next-auth/react";
 
 export default function profilepage() {
   const [activeTab, setActiveTab] = useState("basic");
+  const [loggedUser, setLoggedUser] = useState(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("user");
+    if (stored) {
+      try {
+        setLoggedUser(JSON.parse(stored));
+      } catch {
+        console.error("Invalid JSON in localStorage");
+      }
+    }
+  }, []);
 
   const tabs = [
     { id: "basic", name: "Basic Details" },
@@ -33,7 +45,7 @@ export default function profilepage() {
     <div className="min-h-screen bg-[#E2F4FA]">
       {/* Topbar */}
       <SessionProvider>
-        <Topbar />
+        <Topbar user={loggedUser} />
       </SessionProvider>
 
       {/* Main content with vertical tabs */}

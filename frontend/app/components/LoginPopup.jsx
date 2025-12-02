@@ -32,7 +32,7 @@ export default function LoginPopup({ onClose, onRegister, login }) {
       });
 
       const data = await res.json();
-      console.log(data);
+      // alert(JSON.stringify(data, null, 2));
       if (!res.ok) {
         setError(data.message || "Login failed");
         return;
@@ -43,7 +43,7 @@ export default function LoginPopup({ onClose, onRegister, login }) {
       sessionStorage.setItem("user", JSON.stringify(data));
 
       // Redirect
-      window.location.href = "/profilepages";
+      // window.location.href = "/profilepages";
 
     } catch (err) {
       console.log(err);
