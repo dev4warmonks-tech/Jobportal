@@ -216,135 +216,62 @@ export default function Home() {
         <h1 className="text-center text-[30px] md:text-[40px] font-bold mb-[16px]">
           Find your next tech job now!
         </h1>
-
-        {/* Search Bar */}
         <div className="w-full max-w-3xl mx-auto relative">
+
+          {/* Search Bar */}
           <div className="
-  relative 
-  bg-[#E2F4FA] border border-[#272727] 
-  rounded-full h-[54px] 
-  flex items-center
-  pl-6 pr-[110px]    <!-- space for button -->
-">
+    relative bg-[#E2F4FA] border border-[#272727] 
+    rounded-full h-[54px] flex items-center
+    pl-6 pr-[110px]
+  ">
             <input
               type="text"
               placeholder="Search by job title, skills, or company"
               value={searchInput}
               onChange={(e) => handleSearchInput(e.target.value)}
               className="
-      w-full bg-transparent outline-none 
-      text-black placeholder:text-gray-500 
-      text-sm sm:text-base
-    "
+        w-full bg-transparent outline-none 
+        text-black placeholder:text-gray-500 
+        text-sm sm:text-base
+      "
             />
 
             <button
               className="
-      absolute right-2 top-1/2 -translate-y-1/2
-      bg-black text-white 
-      px-4 sm:px-6 
-      h-[40px] sm:h-[44px]
-      text-sm sm:text-[18px]
-      rounded-full 
-      whitespace-nowrap
-    "
+        absolute right-2 top-1/2 -translate-y-1/2
+        bg-black text-white px-4 sm:px-6 
+        h-[40px] sm:h-[44px]
+        text-sm sm:text-[18px] rounded-full
+      "
             >
               Find your job
             </button>
           </div>
+
+          {/* Suggestions INSIDE same container */}
+          {suggestions.length > 0 && (
+            <div className="absolute top-full left-0 right-0 
+                    bg-white border border-[#272727] 
+                    rounded-lg shadow-lg mt-2 
+                    z-[9999]">
+              {suggestions.map((job) => (
+                <div
+                  key={job._id}
+                  onClick={() => handleSuggestionClick(job)}
+                  className="p-3 hover:bg-[#E2F4FA] cursor-pointer border-b last:border-b-0"
+                >
+                  <p className="font-semibold text-black">{job.title}</p>
+                  <p className="text-sm text-gray-600">
+                    {job.company} · {job.location}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+
         </div>
 
-
-        {/* Suggestions Dropdown */}
-        {suggestions.length > 0 && (
-          <div className="absolute top-full left-0 right-0 bg-white border border-[#272727] rounded-lg shadow-lg mt-2 z-50 max-w-3xl mx-auto">
-            {suggestions.map((job) => (
-              <div
-                key={job._id}
-                onClick={() => handleSuggestionClick(job)}
-                className="p-3 hover:bg-[#E2F4FA] cursor-pointer border-b last:border-b-0"
-              >
-                <p className="font-semibold text-black">{job.title}</p>
-                <p className="text-sm text-gray-600">
-                  {job.company} · {job.location}
-                </p>
-                {Array.isArray(job.skills) && job.skills.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {job.skills.slice(0, 3).map((skill) => (
-                      <span key={skill} className="text-xs bg-black text-white rounded-full px-2 py-1">
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
         <TagsSlider />
-
-        {/* Job Categories (Responsive) */}
-        {/* <div className="flex flex-wrap md:grid grid-cols-5 md:gap-[40px] pt-[20px] md:pt-[40px] md:px-[176px] md:justify-center">
-
-          <div className="w-1/2 md:w-auto mt-[10px]" >
-            <h5 className="font-bold text-[16px]">Job Category</h5>
-            <ul className="mt-2 space-y-1 text-[#525252] text-[16px] leading-[22px]">
-              <li className="flex items-center gap-[8px] text-[16px] leading-[22px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>UI Designer</li>
-              <li className="flex items-center md:gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>UI Developer</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>JavaScript Developer</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>Python Developer</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>UX Designer</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>Web Designer</li>
-            </ul>
-          </div>
-          <div className="w-1/2 md:w-auto mt-[10px]">
-            <h5 className="font-bold text-[16px]">Experience</h5>
-            <ul className="mt-2 space-y-1 text-[#525252]">
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>Fresher</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>0-1 Years</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>1-3 Years</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>3-5 Years</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>6-7 Years</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>8 Years</li>
-            </ul>
-          </div>
-          <div className="w-1/2 md:w-auto mt-[10px]">
-            <h5 className="font-bold text-[16px]">Expected CTC</h5>
-            <ul className="mt-2 space-y-1 text-[#525252]">
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>15K</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>15K-25K</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>25K-50K</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>50K-75K</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>75K-100K</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>100K+</li>
-            </ul>
-          </div>
-          <div className="w-1/2 md:w-auto mt-[10px]">
-            <h5 className="font-bold text-[16px]">Sort by date</h5>
-            <ul className="mt-2 space-y-1 text-[#525252]">
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>UI Designer</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>UI Developer</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>JavaScript Developer</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>Python Developer</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>UX Designer</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>Web Designer</li>
-            </ul>
-          </div>
-          <div className="w-1/2 md:w-auto mt-[10px]">
-            <h5 className="font-bold text-[16px]">Job Category</h5>
-            <ul className="mt-2 space-y-1 text-[#525252]">
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>1 day</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>UI Developer</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>JavaScript Developer</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>Python Developer</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>UX Designer</li>
-              <li className="flex items-center gap-[8px]"><span className="w-[9px] h-[9px] bg-black rounded-full mt-1"></span>Web Designer</li>
-            </ul>
-          </div>
-
-
-        </div> */}
-
       </section>
 
       {/* LATEST JOBS */}
@@ -353,7 +280,7 @@ export default function Home() {
           Latest Jobs
         </h3>
 
-        <div className="flex flex-col lg:flex-row gap-[30px]">
+        <div className="flex flex-col items-start lg:flex-row gap-[30px]">
           {/* Jobs List */}
           <div className="lg:w-4/5 grid grid-cols-1 md:grid-cols-2 gap-[30px]">
 
@@ -412,7 +339,7 @@ export default function Home() {
           </div>
 
           {/* RIGHT SIDEBAR */}
-          <div className="lg:w-1/5 p-4 border border-gray-300 rounded-lg h-auto shadow-md bg-[#E2F4FA]">
+          <div className="lg:w-1/5 p-4 border border-gray-300 rounded-lg  shadow-md bg-[#E2F4FA]">
             <h4 className="text-lg font-semibold mb-2">Support our community</h4>
             <p className="text-gray-600 mb-4">
               Help us grow and provide more opportunities for talented
