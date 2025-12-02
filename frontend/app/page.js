@@ -7,6 +7,7 @@ import LoginPopup from "./components/LoginPopup";
 import RegisterPopup from "./components/RegisterPopup";
 import EmployerRegisterPopup from "./components/EmployerRegisterPopup";
 import OtpPopup from "./components/OtpPopup";
+import TagsSlider from "./components/TagsSlider";
 
 
 export default function Home() {
@@ -35,6 +36,13 @@ export default function Home() {
   const [registerType, setRegisterType] = useState(null); // 'candidate' | 'employer' | null
 
   const [otpData, setOtpData] = useState(null);
+
+  const tags = [
+    "UI Designer", "UI Developer", "Frontend Developer", "Full Stack", "Mobile App Developer",
+    "UI Designer", "Cloud Engineer", "Data Scientist", "ML Engineer", "SOC Analyst", "Security Engineer",
+    "UX Designer", "Product Designer", "Manual Tester", "QA Engineer", "IT Support", "Network Engineer",
+    "Systems Admin", "AI Engineer", "AR/VR Developer"
+  ];
 
   // const handleOtpScreen = (data) => {
   //   setOtpData(data); // store the data for OTP verification
@@ -204,57 +212,79 @@ export default function Home() {
 
 
       {/* HERO SECTION */}
-      <section className="p-[10px] md:p-[50px] items-center bg-[#F5F9FB]">
+      <section className="p-[10px] md:p-[50px] mt-[30px] items-center relative">
         <h1 className="text-center text-[30px] md:text-[40px] font-bold mb-[16px]">
           Find your next tech job now!
         </h1>
 
         {/* Search Bar */}
         <div className="w-full max-w-3xl mx-auto relative">
-          <div className="flex items-center gap-3 bg-[#E2F4FA] border border-[#272727] rounded-full pl-[25px] pr-[5px] h-[54px]">
+          <div className="
+  relative 
+  bg-[#E2F4FA] border border-[#272727] 
+  rounded-full h-[54px] 
+  flex items-center
+  pl-6 pr-[110px]    <!-- space for button -->
+">
             <input
               type="text"
               placeholder="Search by job title, skills, or company"
               value={searchInput}
               onChange={(e) => handleSearchInput(e.target.value)}
-              className="flex-1 bg-transparent outline-none text-black placeholder:text-gray-500"
+              className="
+      w-full bg-transparent outline-none 
+      text-black placeholder:text-gray-500 
+      text-sm sm:text-base
+    "
             />
 
-            <button className="bg-black text-white px-[20px] h-[44px] text-[12px] md:text-[18px] leading-[20px] md:leading-[26px] rounded-full">
+            <button
+              className="
+      absolute right-2 top-1/2 -translate-y-1/2
+      bg-black text-white 
+      px-4 sm:px-6 
+      h-[40px] sm:h-[44px]
+      text-sm sm:text-[18px]
+      rounded-full 
+      whitespace-nowrap
+    "
+            >
               Find your job
             </button>
           </div>
-
-          {/* Suggestions Dropdown */}
-          {suggestions.length > 0 && (
-            <div className="absolute top-full left-0 right-0 bg-white border border-[#272727] rounded-lg shadow-lg mt-2 z-50 max-w-3xl mx-auto">
-              {suggestions.map((job) => (
-                <div
-                  key={job._id}
-                  onClick={() => handleSuggestionClick(job)}
-                  className="p-3 hover:bg-[#E2F4FA] cursor-pointer border-b last:border-b-0"
-                >
-                  <p className="font-semibold text-black">{job.title}</p>
-                  <p className="text-sm text-gray-600">
-                    {job.company} · {job.location}
-                  </p>
-                  {Array.isArray(job.skills) && job.skills.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {job.skills.slice(0, 3).map((skill) => (
-                        <span key={skill} className="text-xs bg-black text-white rounded-full px-2 py-1">
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
         </div>
 
+
+        {/* Suggestions Dropdown */}
+        {suggestions.length > 0 && (
+          <div className="absolute top-full left-0 right-0 bg-white border border-[#272727] rounded-lg shadow-lg mt-2 z-50 max-w-3xl mx-auto">
+            {suggestions.map((job) => (
+              <div
+                key={job._id}
+                onClick={() => handleSuggestionClick(job)}
+                className="p-3 hover:bg-[#E2F4FA] cursor-pointer border-b last:border-b-0"
+              >
+                <p className="font-semibold text-black">{job.title}</p>
+                <p className="text-sm text-gray-600">
+                  {job.company} · {job.location}
+                </p>
+                {Array.isArray(job.skills) && job.skills.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {job.skills.slice(0, 3).map((skill) => (
+                      <span key={skill} className="text-xs bg-black text-white rounded-full px-2 py-1">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+        <TagsSlider />
+
         {/* Job Categories (Responsive) */}
-        <div className="flex flex-wrap md:grid grid-cols-5 md:gap-[40px] pt-[20px] md:pt-[40px] md:px-[176px] md:justify-center">
+        {/* <div className="flex flex-wrap md:grid grid-cols-5 md:gap-[40px] pt-[20px] md:pt-[40px] md:px-[176px] md:justify-center">
 
           <div className="w-1/2 md:w-auto mt-[10px]" >
             <h5 className="font-bold text-[16px]">Job Category</h5>
@@ -313,7 +343,8 @@ export default function Home() {
           </div>
 
 
-        </div>
+        </div> */}
+
       </section>
 
       {/* LATEST JOBS */}
@@ -434,47 +465,59 @@ export default function Home() {
           </div>
 
           <div className="mt-8  mx-auto flex flex-col md:flex-row">
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600 mb-4 md:w-1/2">
               Subscribe to our newsletter and never miss an opportunity. Get the newest job listings and industry updates straight to your inbox.
             </p>
 
-            <div className="w-full max-w-3xl mx-auto flex items-center gap-3 bg-[#E2F4FA] border border-[#272727] rounded-full pl-[25px] pr-[5px] h-[54px]">
-              {subscribed ? (
-                <div className="flex-1 text-black font-medium">Suscribed</div>
-              ) : (
-                <>
-                  <input
-                    type="text"
-                    placeholder="Enter your email address"
-                    value={newsletterEmail}
-                    onChange={(e) => setNewsletterEmail(e.target.value)}
-                    className="flex-1 bg-transparent outline-none text-black placeholder:text-gray-500"
-                  />
+            <div className=" md:w-1/2
+  relative 
+  bg-[#E2F4FA] border border-[#272727] 
+  rounded-full h-[54px] 
+  flex items-center
+  pl-6 pr-[110px]">
+              <input
+                type="text"
+                placeholder="Enter Your Email Address"
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
+                className="
+      w-full bg-transparent outline-none 
+      text-black placeholder:text-gray-500 
+      text-sm sm:text-base
+    "
+              />
 
-                  <button
-                    onClick={async () => {
-                      try {
-                        const res = await fetch(`${BACKEND_BASE}/api/subscriptions`, {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ email: newsletterEmail, userId: session?.user?.id }),
-                        });
-                        if (res.ok) {
-                          setSubscribed(true);
-                        } else {
-                          console.error('subscribe failed');
-                        }
-                      } catch (err) {
-                        console.error(err);
-                      }
-                    }}
-                    className={`${newsletterEmail ? "bg-black disabled" : "bg-black"} bg-black text-white px-[20px] h-[44px] text-[15px] md:text-[18px] leading-[20px] md:leading-[26px] rounded-full`}
-                  >
-                    Suscribe Now
-                  </button>
-                </>
-              )}
+              <button
+                onClick={async () => {
+                  try {
+                    const res = await fetch(`${BACKEND_BASE}/api/subscriptions`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ email: newsletterEmail, userId: session?.user?.id }),
+                    });
+                    if (res.ok) {
+                      setSubscribed(true);
+                    } else {
+                      console.error('subscribe failed');
+                    }
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+                className="
+      absolute right-2 top-1/2 -translate-y-1/2
+      bg-black text-white 
+      px-4 sm:px-6 
+      h-[40px] sm:h-[44px]
+      text-sm sm:text-[18px]
+      rounded-full 
+      whitespace-nowrap
+    "
+              >
+                Suscribe Now
+              </button>
             </div>
+
           </div>
 
         </div>
