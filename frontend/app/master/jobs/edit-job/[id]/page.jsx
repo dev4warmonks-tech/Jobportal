@@ -26,6 +26,35 @@ export default function EditJob() {
   const [selected, setSelected] = useState([]);
   const [open, setOpen] = useState(false);
 
+  const [categories, setCategories] = useState([]);
+  const [editItem, setEditItem] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // Fetch categories from backend
+  const loadCategories = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch(`https://api.mindssparsh.com/api/job-categories`);
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || "Failed to load categories");
+      }
+      const data = await res.json();
+      setCategories(data);
+    } catch (err) {
+      //   console.error(err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
   const skillsOptions = [
     "JavaScript", "React", "Node.js", "Tailwind", "MongoDB", "Laravel"
   ];
@@ -63,7 +92,7 @@ export default function EditJob() {
     const updatedJob = { ...job, skills: selected };
     await updateJob(id, updatedJob);
     alert("Job Updated Successfully!");
-    router.push("/employer/jobs");
+    router.push("/master/jobs");
   };
 
   return (
@@ -125,9 +154,11 @@ export default function EditJob() {
             <label className="block mb-1">Job Category</label>
             <select name="jobcategory" value={job.jobcategory} onChange={handleChange}
               className="w-full border rounded bg-[#CCE9F2] px-3 py-2">
-              <option value="ui">UI Designer</option>
-              <option value="ux">UX Designer</option>
-              <option value="laravel">Laravel Developer</option>
+              {categories.map((cat) => (
+                <option key={cat.jobCategory} value={cat.jobCategory}>
+                  {cat.jobCategory}
+                </option>
+              ))}
             </select>
           </div>
 
