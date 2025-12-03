@@ -1,12 +1,26 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { getUserRole } from "../../api/api";
 const API_URL = "https://api.mindssparsh.com/api/users";
 
 export default function EmployersList({ setEditItem, reload }) {
   const [employers, setEmployers] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // -----------------------------
+  // Load Roles (Admin, Employer, Candidate)
+  // -----------------------------
+  useEffect(() => {
+    getUserRole()
+      .then((data) => setRoles(data))
+      .catch((err) => console.error("Failed to fetch roles:", err));
+  }, []);
+  // -----------------------------
+  // Load Employers
+  // -----------------------------
 
   useEffect(() => {
     loadEmployers();
@@ -81,6 +95,12 @@ export default function EmployersList({ setEditItem, reload }) {
     }
   };
 
+  // Helper: Convert role ID → role name
+  const getRoleName = (roleId) => {
+    const role = roles.find((r) => r._id === roleId);
+    return role?.name || "Unknown";
+  };
+
   return (
     <div className="bg-white rounded-lg shadow">
       <div className="flex justify-between items-center p-6 border-b">
@@ -112,7 +132,7 @@ export default function EmployersList({ setEditItem, reload }) {
             </thead>
             <tbody>
               {employers.map((employer, index) => (
-                employer.role === "employer" && (
+                // employer.role === "employer" && (
                   <tr key={employer._id} className="border-t hover:bg-gray-50">
                     {/* <td className="py-3 px-4 text-sm">{employer._id.substring(0, 8)}...</td> */}
                     {/* Serial number instead of ID */}
@@ -168,7 +188,7 @@ export default function EmployersList({ setEditItem, reload }) {
                       </div>
                     </td>
                   </tr>
-                )
+                // )
               ))}
             </tbody>
           </table>

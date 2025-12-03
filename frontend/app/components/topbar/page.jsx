@@ -2,44 +2,42 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSession, signOut } from 'next-auth/react';
 import { useState, useEffect } from "react";
 import UserMenu from "./UserMenu";
 
 export default function Topbar({ user }) {
   const pathname = usePathname();
   const profileImage = "/images/profile.jpg";
-  const { data: session } = useSession();
   const userName =
     user?.firstName ||
     user?.email ||
     "User";
 
-  useEffect(() => {
-    const fetchUserName = async () => {
-      if (!session?.user?.id) return;
+  // useEffect(() => {
+  //   const fetchUserName = async () => {
+  //     if (!session?.user?.id) return;
 
-      try {
-        const response = await fetch(`https://api.mindssparsh.com/api/users/${session.user.id}`, {
-          headers: {
-            'Authorization': `Bearer ${session.user.token}`,
-          },
-        });
+  //     try {
+  //       const response = await fetch(`https://api.mindssparsh.com/api/users/${session.user.id}`, {
+  //         headers: {
+  //           'Authorization': `Bearer ${session.user.token}`,
+  //         },
+  //       });
 
-        if (response.ok) {
-          const userData = await response.json();
-          const fullName = `${userData.firstName} ${userData.lastName || ''}`.trim();
-          setUserName(fullName);
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        // Fallback to session name if fetch fails
-        setUserName(session.user.name || "User");
-      }
-    };
+  //       if (response.ok) {
+  //         const userData = await response.json();
+  //         const fullName = `${userData.firstName} ${userData.lastName || ''}`.trim();
+  //         setUserName(fullName);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching user data:", error);
+  //       // Fallback to session name if fetch fails
+  //       setUserName(session.user.name || "User");
+  //     }
+  //   };
 
-    fetchUserName();
-  }, [session]);
+  //   fetchUserName();
+  // }, [session]);
   return (
     <div className="bg-white">
       <div className="w-full bg-[#E2F4FA] text-black">
@@ -60,7 +58,7 @@ export default function Topbar({ user }) {
 
         <div className="mt-5 px-4 bg-[#CCE9F2] p-5 ml-5 mr-5">
           <p className="text-lg">Welcome,</p>
-          <p className="text-xl font-semibold">{userName || session?.user?.name || 'Guest'}</p>
+          <p className="text-xl font-semibold">{userName}</p>
           <p className="text-black text-sm mt-2">
             Manage your job applications, update your profile, and explore new opportunities—all in one place.
           </p>

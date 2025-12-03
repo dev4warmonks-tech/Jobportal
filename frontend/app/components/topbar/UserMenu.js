@@ -55,9 +55,13 @@ export default function UserMenu({ user, profileImage }) {
 
       {open && (
         <div className="absolute right-0 mt-2 w-44 bg-[#E2F4FA] border rounded-xl shadow-lg py-2 z-50">
-          <a href="/" className="block px-4 py-2 text-sm hover:bg-gray-100">
+          <button
+            onClick={() => (window.location.href = window.location.origin)}
+            className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+          >
             🏠 Home
-          </a>
+          </button>
+
 
           <a href={profileUrl} className="block px-4 py-2 text-sm hover:bg-gray-100">
             👤 My Profile

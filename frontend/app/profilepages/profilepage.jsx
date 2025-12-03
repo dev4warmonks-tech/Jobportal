@@ -3,11 +3,8 @@ import { useState, useEffect } from "react";
 import BasicDetails from "./BasicDetails";
 import ProfessionalDetails from "./ProfessionalDetails";
 import AppliedJobsView from "./AppliedJobs";
-import Topbar from "../components/topbar/page";
-import { SessionProvider } from "next-auth/react";
 
-
-export default function profilepage() {
+export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("basic");
   const [loggedUser, setLoggedUser] = useState(null);
 
@@ -43,10 +40,7 @@ export default function profilepage() {
 
   return (
     <div className="min-h-screen bg-[#E2F4FA]">
-      {/* Topbar */}
-      <SessionProvider>
-        <Topbar user={loggedUser} />
-      </SessionProvider>
+      {/* ❌ Topbar removed — Layout already displays it */}
 
       {/* Main content with vertical tabs */}
       <div className="flex flex-col md:flex-row p-4 md:p-6 mt-6">
@@ -62,12 +56,10 @@ export default function profilepage() {
                   ${isActive ? "bg-[#CCE9F2] border-[#A8D6E3] font-bold" : "hover:bg-[#D6EFF6] border-transparent"}
                 `}
               >
-                {/* Tab Text */}
                 <span className={`${isActive ? "font-bold" : "font-normal"} text-sm text-black md:text-base`}>
                   {tab.name}
                 </span>
 
-                {/* Circle with Arrow */}
                 <div
                   className={`w-7 h-7 flex items-center justify-center rounded-full p-2
                     ${isActive ? "bg-[#CCE9F2] border border-black" : "bg-[#E2F4FA]"}`}
@@ -80,11 +72,7 @@ export default function profilepage() {
                     stroke="currentColor"
                     className="w-4 h-4 text-black"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M9 5l7 7-7 7"
-                    />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                   </svg>
                 </div>
               </div>
@@ -92,7 +80,6 @@ export default function profilepage() {
           })}
         </div>
 
-        {/* Tab Content */}
         <div className="flex-1 mt-4 md:mt-0 md:ml-6">{renderTabContent()}</div>
       </div>
     </div>

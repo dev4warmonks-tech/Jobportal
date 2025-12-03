@@ -4,6 +4,7 @@ import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { loginUser } from '../api/api';
+import { getUserRole } from "../api/api";
 
 export default function LoginPopup({ onClose, onRegister, login }) {
   const [email, setEmail] = useState('');
@@ -15,38 +16,100 @@ export default function LoginPopup({ onClose, onRegister, login }) {
   const [showUserType, setShowUserType] = useState(false);
   // const { login } = useSession();
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setError("");
+
+  //   try {
+  //     const res = await fetch("https://api.mindssparsh.com/api/auth/login", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         email: emailOrPhone,
+  //         mobile: "9876543210",
+  //       }),
+  //     });
+
+  //     const data = await res.json();
+  //     // alert(JSON.stringify(data, null, 2));
+  //     if (!res.ok) {
+  //       setError(data.message || "Login failed");
+  //       return;
+  //     }
+
+  //     // Store user in localStorage / cookie
+  //     localStorage.setItem("user", JSON.stringify(data));
+  //     sessionStorage.setItem("user", JSON.stringify(data));
+
+  //     // Redirect
+  //     // window.location.href = "/profilepages";
+
+  //   } catch (err) {
+  //     console.log(err);
+  //     setError("Something went wrong");
+  //   }
+  // };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const phoneRegex = /^\d{10}$/;
+
+      const isEmail = emailRegex.test(emailOrPhone);
+      const isPhone = phoneRegex.test(emailOrPhone);
+
+      if (!isEmail && !isPhone) {
+        setError("Enter a valid email or 10-digit phone number");
+        return;
+      }
+
       const res = await fetch("https://api.mindssparsh.com/api/auth/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: emailOrPhone,
-          mobile: "9876543210",
+          email: isEmail ? emailOrPhone : "",
+          mobile: isPhone ? emailOrPhone : "",
         }),
       });
 
       const data = await res.json();
-      // alert(JSON.stringify(data, null, 2));
       if (!res.ok) {
         setError(data.message || "Login failed");
         return;
       }
 
-      // Store user in localStorage / cookie
+      // Save user
       localStorage.setItem("user", JSON.stringify(data));
       sessionStorage.setItem("user", JSON.stringify(data));
 
-      // Redirect
-      // window.location.href = "/profilepages";
+      // 🔥 Fetch all roles like UserMenu
+      const allRoles = await getUserRole();
+
+      // 🔥 Match role ID with user role
+      const matchedRole = allRoles.find(r => r._id === data.user_role);
+      const roleName = matchedRole?.name?.toLowerCase() || "candidate";
+
+      console.log("Matched role:", roleName);
+
+      // 🔥 Redirect based on role
+      if (roleName === "employer") {
+        window.location.href = "/employer/jobs";
+      } else if (["admin", "super admin"].includes(roleName)) {
+        window.location.href = "/master/jobs";
+      } else {
+        window.location.href = "/profilepages";
+      }
+
+      onClose();
 
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setError("Something went wrong");
     }
   };

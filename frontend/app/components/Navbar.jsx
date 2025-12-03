@@ -10,7 +10,7 @@ export default function Navbar() {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [userType, setUserType] = useState(null);
-  const [loggedUser, setLoggedUser] = useState<any>(null); // store user from localStorage
+  const [loggedUser, setLoggedUser] = useState(null); // store user from localStorage
 
   // Load user from localStorage
   useEffect(() => {
