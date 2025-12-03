@@ -61,11 +61,11 @@ body {
 .marquee-content {
   display: inline-flex;
   white-space: nowrap;
-  animation: marquee-left 25s linear infinite;
+  animation: marquee-left 35s linear infinite;
 }
 
 .marquee-content.reverse {
-  animation: marquee-right 25s linear infinite;
+  animation: marquee-right 35s linear infinite;
 }
 
 /* Left → Right (actually 100% of width scrolls) */
