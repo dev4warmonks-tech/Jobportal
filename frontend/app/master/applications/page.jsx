@@ -84,7 +84,8 @@ export default function ApplicationsPage() {
           <table className="w-full bg-white rounded-xl shadow mr-[20px]">
             <thead className="bg-[#e8faff] text-left">
               <tr>
-                <th className="py-3 px-4">Application ID</th>
+                {/* <th className="py-3 px-4">Application ID</th> */}
+                <th className="py-3 px-4">Sl No</th>
                 <th className="py-3 px-4">Candidate Name</th>
                 <th className="py-3 px-4">Email</th>
                 <th className="py-3 px-4">Mobile</th>
@@ -103,9 +104,10 @@ export default function ApplicationsPage() {
                   </td>
                 </tr>
               ) : (
-                applications.map((app) => (
+                applications.map((app,index) => (
                   <tr key={app._id} className="border-t hover:bg-gray-50">
-                    <td className="py-3 px-4 text-sm">{app._id.slice(-6)}</td>
+                    {/* <td className="py-3 px-4 text-sm">{app._id.slice(-6)}</td> */}
+                    <td className="py-3 px-4 text-sm">{index+1}</td>
                     <td className="py-3 px-4">
                       {app.userId?.firstName} {app.userId?.lastName}
                     </td>

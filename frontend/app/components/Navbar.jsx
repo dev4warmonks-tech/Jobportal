@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import LoginPopup from "./LoginPopup";
 import RegisterPopup from "./RegisterPopup";
 import EmployerRegisterPopup from "./EmployerRegisterPopup";
 import { getUserRole } from "../api/api";
 
 export default function Navbar() {
+  const dropdownRef = useRef(null);
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [userType, setUserType] = useState(null);
@@ -45,6 +46,20 @@ export default function Navbar() {
 
     loadRole();
   }, [loggedUser]);
+
+  useEffect(() => {
+  function handleClickOutside(event) {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setOpen(false);
+    }
+  }
+
+  document.addEventListener("mousedown", handleClickOutside);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
 
   const openLogin = () => {
     setShowRegister(false);
@@ -90,9 +105,9 @@ export default function Navbar() {
           {/* Right Section */}
           {loggedUser ? (
             // Logged In Menu
-            <div className="relative">
+            <div className="relative" ref={dropdownRef}>
               <div
-                className="flex items-center space-x-3 px-5 py-2 rounded-full cursor-pointer hover:bg-gray-100"
+                className="flex items-center space-x-3 px-5 py-2 rounded-full cursor-pointer hover:bg-[#CCE9F2]"
                 onClick={() => setOpen(!open)}
               >
                 <span>Hi, {loggedUser.firstName || loggedUser.email || "User"}</span>
@@ -106,20 +121,20 @@ export default function Navbar() {
                 <div className="absolute right-0 mt-2 w-44 bg-[#E2F4FA] border rounded-xl shadow-lg py-2 z-50">
                   <button
                     onClick={() => (window.location.href = "/")}
-                    className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                    className="block w-full text-left px-4 py-2 text-sm hover:bg-[#CCE9F2]"
                   >
                     🏠 Home
                   </button>
 
                   <Link href={profileUrl}>
-                    <div className="block px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer">
+                    <div className="block px-4 py-2 text-sm hover:bg-[#CCE9F2] cursor-pointer">
                       👤 My Profile
                     </div>
                   </Link>
 
                   <button
                     onClick={handleLogout}
-                    className="w-full px-4 py-2 text-sm text-left hover:bg-gray-100"
+                    className="w-full px-4 py-2 text-sm text-left hover:bg-[#CCE9F2]"
                   >
                     🔓 Logout
                   </button>

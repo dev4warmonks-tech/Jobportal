@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { addJob } from "../../../api";
 
 
@@ -59,6 +59,7 @@ export default function BasicDetails() {
   const [jobCategoryOptions, setjobCategoryOptions] = useState([]);
   const [skillsOptions, setSkillsOptions] = useState([]);
   const [openSkills, setOpenSkills] = useState(false);
+  const dropdownRef = useRef(null);
 
   const toggleSkill = (skill) => {
     if (selected.includes(skill)) {
@@ -106,6 +107,20 @@ export default function BasicDetails() {
         setSkillsOptions(data);
       })
       .catch(err => console.error("Failed to fetch key skills:", err));
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   return (
@@ -220,7 +235,7 @@ export default function BasicDetails() {
 
           <div className="w-1/2">
             <label className="block font-medium mb-1">Skills</label>
-            <div className="relative">
+            <div className="relative" ref={dropdownRef}>
               <div
                 className="min-h-[45px] w-full border rounded bg-[#CCE9F2] px-2 py-1 flex flex-wrap gap-1 cursor-pointer"
                 onClick={() => setOpen(!open)}

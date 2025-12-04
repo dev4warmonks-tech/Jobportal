@@ -39,7 +39,7 @@ export default function EmployersPage() {
   }, [role]);
 
   return (
-    <div className="p-8 bg-[#E2F4FA] min-h-screen">
+    <div className="p-8 bg-[#d6f2fb] min-h-screen">
       <h1 className="text-2xl font-bold mb-6 text-black">
         {role ? role.charAt(0).toUpperCase() + role.slice(1) + "s" : "Users"}
       </h1>

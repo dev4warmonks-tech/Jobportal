@@ -46,7 +46,8 @@ export default function CandidatesList({ candidates, setEditItem, reload }) {
                 <td className="py-3 px-4 text-sm">{index + 1}</td>
                 <td className="p-3 border">{candidate.firstName} {candidate.lastName}</td>
                 <td className="p-3 border">{candidate.email}</td>
-                <td className="p-3 border">{candidate.skills?.substring(0, 50)}...</td>
+                {/* <td className="p-3 border">{candidate.skills?.substring(0, 50)}...</td> */}
+                <td className="p-3 border">{candidate.skills?.join(", ") || "—"}</td>
                 <td className="p-3 border space-x-2">
                   {/* <button
                     onClick={() => setEditItem(candidate._id)}

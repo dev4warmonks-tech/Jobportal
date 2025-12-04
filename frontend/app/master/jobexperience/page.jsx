@@ -35,7 +35,7 @@ export default function JobExperiencePage() {
   }, []);
 
   return (
-    <div className="p-8 bg-[#E2F4FA] min-h-screen">
+    <div className="p-8 bg-[#d6f2fb] min-h-screen">
       <h1 className="text-2xl font-bold mb-6">Job Experience</h1>
 
       <JobExperienceForm

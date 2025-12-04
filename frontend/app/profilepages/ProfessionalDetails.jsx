@@ -1,8 +1,9 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function ProfessionalDetails() {
   const [userId, setUserId] = useState(null); // store logged in user id
+  const dropdownRef = useRef(null);
 
   const [form, setForm] = useState({
     experiencelevel: "",
@@ -17,6 +18,11 @@ export default function ProfessionalDetails() {
   const [loading, setLoading] = useState(true);
 
   const [experienceOptions, setExperienceOptions] = useState([]);
+  const [educationOptions, setEducationOptions] = useState([]);
+  const [industryOptions, setIndustryOptions] = useState([]);
+  const [selected, setSelected] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [skillsOptions, setSkillsOptions] = useState([]);
 
   // Fetch experience options
   useEffect(() => {
@@ -24,6 +30,32 @@ export default function ProfessionalDetails() {
       .then((res) => res.json())
       .then((data) => setExperienceOptions(data))
       .catch((err) => console.error("Failed to fetch experience:", err));
+  }, []);
+
+  // Fetch education options
+  useEffect(() => {
+    fetch("https://api.mindssparsh.com/api/education")
+      .then((res) => res.json())
+      .then((data) => setEducationOptions(data))
+      .catch((err) => console.error("Failed to fetch education details:", err));
+  }, []);
+
+  // Fetch industry options
+  useEffect(() => {
+    fetch("https://api.mindssparsh.com/api/industry")
+      .then((res) => res.json())
+      .then((data) => setIndustryOptions(data))
+      .catch((err) => console.error("Failed to fetch industry:", err));
+  }, []);
+
+  // Fetch key skills options
+  useEffect(() => {
+    fetch("https://api.mindssparsh.com/api/skills")
+      .then(res => res.json())
+      .then(data => {
+        setSkillsOptions(data);
+      })
+      .catch(err => console.error("Failed to fetch key skills:", err));
   }, []);
 
   // Fetch existing professional details
@@ -50,6 +82,7 @@ export default function ProfessionalDetails() {
             preferredjobtype: data.preferredJobType || "",
             keySkills: data.keySkills || [],
           });
+          setSelected(data.keySkills || []);
           setProfessionalId(data._id);
         } else if (response.status === 404) {
           console.log("No professional details found");
@@ -64,18 +97,39 @@ export default function ProfessionalDetails() {
     fetchProfessionalData();
   }, []); // removed session dependency
 
-  const skillsOptions = ["JavaScript", "React", "Node.js", "Python", "Java", "SQL"];
-
-  const handleSelectSkill = (skill) => {
-    if (!form.keySkills.includes(skill)) {
-      setForm({ ...form, keySkills: [...form.keySkills, skill] });
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpen(false);
+      }
     }
-  };
 
-  const handleRemoveSkill = (skill) => {
-    setForm({ ...form, keySkills: form.keySkills.filter((s) => s !== skill) });
-  };
+    document.addEventListener("mousedown", handleClickOutside);
 
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+
+  // const skillsOptions = ["JavaScript", "React", "Node.js", "Python", "Java", "SQL"];
+
+  // const handleSelectSkill = (skill) => {
+  //   if (!form.keySkills.includes(skill)) {
+  //     setForm({ ...form, keySkills: [...form.keySkills, skill] });
+  //   }
+  // };
+
+  // const handleRemoveSkill = (skill) => {
+  //   setForm({ ...form, keySkills: form.keySkills.filter((s) => s !== skill) });
+  // };
+  const toggleSkill = (skill) => {
+    setSelected(prev =>
+      prev.includes(skill)
+        ? prev.filter(s => s !== skill)   // Remove
+        : [...prev, skill]               // Add
+    );
+  };
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -95,7 +149,8 @@ export default function ProfessionalDetails() {
       currentCompany: form.currentcompany,
       preferredIndustry: form.preferredindustry,
       preferredJobType: form.preferredjobtype,
-      keySkills: form.keySkills,
+      // keySkills: form.keySkills,
+      keySkills: selected,
     };
 
     try {
@@ -173,8 +228,14 @@ export default function ProfessionalDetails() {
               required
             >
               <option value="">Select</option>
+              {educationOptions.map((edu) => (
+                <option key={edu._id} value={edu.education}>
+                  {edu.education}
+                </option>
+              ))}
+              {/* <option value="">Select</option>
               <option value="degree">Bachelor's Degree</option>
-              <option value="pg">PG</option>
+              <option value="pg">PG</option> */}
             </select>
           </div>
         </div>
@@ -201,9 +262,15 @@ export default function ProfessionalDetails() {
               required
             >
               <option value="">Select</option>
+              {industryOptions.map((ind) => (
+                <option key={ind._id} value={ind.industry}>
+                  {ind.industry}
+                </option>
+              ))}
+              {/* <option value="">Select</option>
               <option value="finance">Finance</option>
               <option value="it">IT</option>
-              <option value="marketing">Marketing</option>
+              <option value="marketing">Marketing</option> */}
             </select>
           </div>
         </div>
@@ -225,9 +292,9 @@ export default function ProfessionalDetails() {
         </div>
       {/* ... */}
         {/* Key Skills */}
-        <div className="text-black">
+        {/* <div className="text-black">
           <label className="block font-medium mb-1">Key skills and expertise</label>
-          {/* Selected Skills */}
+          
           <div className="flex flex-wrap gap-2 mb-2">
             {form.keySkills.map((skill) => (
               <span
@@ -236,7 +303,7 @@ export default function ProfessionalDetails() {
                 onClick={() => handleRemoveSkill(skill)}
               >
                 {skill}
-                {/* Down Arrow Icon */}
+                
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="w-3 h-3 ml-1"
@@ -254,7 +321,7 @@ export default function ProfessionalDetails() {
               </span>
             ))}
           </div>
-          {/* Skills Dropdown */}
+          
           <select
             onChange={(e) => {
               handleSelectSkill(e.target.value);
@@ -269,7 +336,49 @@ export default function ProfessionalDetails() {
               </option>
             ))}
           </select>
+        </div> */}
+
+        <div className="text-black">
+          <label className="block mb-1">Skills</label>
+          <div className="relative" ref={dropdownRef}>
+            <div
+              className="min-h-[45px] w-full border rounded bg-[#CCE9F2] px-2 py-1 flex flex-wrap gap-1 cursor-pointer"
+              onClick={() => setOpen(!open)}
+            >
+              {selected.length === 0 && (
+                <span className="text-gray-500">Select skills</span>
+              )}
+
+              {selected.map((skill) => (
+                <span
+                  key={skill}
+                  className="bg-black text-white text-xs px-2 py-1 rounded-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleSkill(skill);
+                  }}
+                >
+                  {skill} ✕
+                </span>
+              ))}
+            </div>
+
+            {open && (
+              <ul className="absolute bg-white shadow rounded w-full z-10 max-h-40 overflow-auto">
+                {skillsOptions.map((skill) => (
+                  <li
+                    key={skill._id} // use _id if your API returns objects
+                    className="px-3 py-2 cursor-pointer hover:bg-gray-200"
+                    onClick={() => toggleSkill(skill.skills)} // adjust if API returns object
+                  >
+                    {skill.skills}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
+
         {/* Submit Button */}
         <div className="flex">
           <button
