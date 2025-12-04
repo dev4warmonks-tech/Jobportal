@@ -79,17 +79,17 @@ export default function Home() {
   }, []);   // runs only once
 
   useEffect(() => {
-    if (session?.user?.email) {
-      setNewsletterEmail(session.user.email);
+    if (loggedUser?.email) {
+      setNewsletterEmail(loggedUser.email);
       // check subscription
-      fetch(`${BACKEND_BASE}/api/subscriptions?email=${encodeURIComponent(session.user.email)}`)
+      fetch(`${BACKEND_BASE}/api/subscriptions?email=${encodeURIComponent(loggedUser.email)}`)
         .then((r) => r.json())
         .then((data) => {
           if (data?.exists) setSubscribed(true);
         })
         .catch((e) => console.error('check subscription error', e));
     }
-  }, [session]);
+  }, [loggedUser]);
 
   const handleSearchInput = (value) => {
     setSearchInput(value);

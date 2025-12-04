@@ -87,7 +87,7 @@ export default function EmployersList({ employers, setEditItem, reload }) {
                   <td className="py-3 px-4">
                     {employer.logo ? (
                       <img
-                        src={`https://api.mindssparsh.com/${employer.logo}`}
+                        src={`https://api.mindssparsh.com/uploads/${employer.logo}`}
                         alt="Logo"
                         className="w-10 h-10 object-cover rounded-full"
                       />
