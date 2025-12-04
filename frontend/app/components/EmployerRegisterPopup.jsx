@@ -12,6 +12,7 @@ export default function EmployerRegisterPopup({ onClose, onLogin }) {
   const [otpSent, setOtpSent] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   // const handleSubmit = async (e) => {
   //   e.preventDefault();
@@ -61,10 +62,40 @@ export default function EmployerRegisterPopup({ onClose, onLogin }) {
         setError('Please accept terms & conditions.');
         return;
       }
+      const phoneRegex = /^\d{10}$/;
+      if (!phoneRegex.test(phone)) {
+        setError('Enter a valid 10-digit phone number');
+        return;
+      }
+      // Validate email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        setError('Enter a valid email address');
+        return;
+      }
   
       try {
-        // const res = await sendOtp({ name, email, phone: mobile });
-        const res = await sendOtp({ email });
+//         const checkRes = await fetch(
+//           `https://api.mindssparsh.com/api/users?email=${email}&mobile=${phone}`
+//         );
+
+//         const existingUsers = await checkRes.json();
+// console.log(existingUsers);
+//         if (Array.isArray(existingUsers) && existingUsers.length > 0) {
+//           setError('Email or phone number already registered');
+//           return;
+//         }
+
+        const checkRes = await fetch(
+          `https://api.mindssparsh.com/api/users/check-unique?email=${email}&mobile=${phone}`
+        );
+        const { exists } = await checkRes.json();
+        if (exists) {
+          setError('Email or phone number already registered');
+          return;
+        }
+        
+        const res = await sendOtp({ email, phone });
   
         if (res.success) {
           setOtpSent(true);
@@ -93,10 +124,29 @@ export default function EmployerRegisterPopup({ onClose, onLogin }) {
       });
 
       if (res.success) {
-        onLogin();
+        setSuccess("User registered successfully");
+        setError("");
+        setTimeout(() => {
+          // setSuccess("");
+          onLogin();
+        }, 2000);
+        // // onLogin();
+        // setSuccess("User registered successfully");
+
+        // // After 2 seconds, redirect to login page
+        // setTimeout(() => {
+        //   setSuccess(""); // Clear the message
+        //   onLogin(); // Call the login function or redirect
+        // }, 2000);
       } else {
-        setError(res.message || 'Invalid OTP');
+        setError(res.message || "Invalid OTP");
       }
+
+      // if (res.success) {
+      //   onLogin();
+      // } else {
+      //   setError(res.message || 'Invalid OTP');
+      // }
     } catch (err) {
       setError('OTP verification failed');
       console.error(err);
@@ -181,7 +231,7 @@ export default function EmployerRegisterPopup({ onClose, onLogin }) {
               className="w-full px-3 py-2 border bg-[#CCE9F2] rounded-lg"
               required
             />
-
+            {success && <p className="text-green-500 text-sm">{success}</p>}
             {error && <p className="text-red-500 text-sm">{error}</p>}
 
             <button className="w-full px-4 py-2 bg-[#CCE9F2] rounded-lg hover:bg-black hover:text-white">

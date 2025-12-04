@@ -11,6 +11,7 @@ export default function RegisterPopup({ onClose, onLogin }) {
   const [otpSent, setOtpSent] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleSendOtp = async (e) => {
     e.preventDefault();
@@ -24,8 +25,30 @@ export default function RegisterPopup({ onClose, onLogin }) {
       setError('Please accept terms & conditions.');
       return;
     }
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(mobile)) {
+      setError('Enter a valid 10-digit phone number');
+      return;
+    }
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Enter a valid email address');
+      return;
+    }
 
     try {
+
+      const checkRes = await fetch(
+        `https://api.mindssparsh.com/api/users/check-unique?email=${email}&mobile=${mobile}`
+      );
+      
+      const { exists } = await checkRes.json();
+      if (exists) {
+        setError('Email or phone number already registered');
+        return;
+      }
+      
       // const res = await sendOtp({ name, email, phone: mobile });
       const res = await sendOtp({ email });
 
@@ -53,14 +76,14 @@ export default function RegisterPopup({ onClose, onLogin }) {
         user_type: "candidate"
       });
 
-
+console.log(res);
       if (res.success) {
         // onLogin();
-        setError("User registered successfully");
+        setSuccess("User registered successfully");
 
-        // After 2 seconds, redirect to login page
+        // // After 2 seconds, redirect to login page
         setTimeout(() => {
-          setError(""); // Clear the message
+        //   setError(""); // Clear the message
           onLogin(); // Call the login function or redirect
         }, 2000);
       } else {
@@ -123,6 +146,7 @@ export default function RegisterPopup({ onClose, onLogin }) {
               <label className="text-sm">I accept the terms & conditions</label>
             </div>
 
+            
             {error && <p className="text-red-500 text-sm">{error}</p>}
 
             <button className="w-full px-4 py-2 bg-[#CCE9F2] rounded-lg hover:bg-black hover:text-white">
@@ -139,7 +163,7 @@ export default function RegisterPopup({ onClose, onLogin }) {
               className="w-full px-3 py-2 border bg-[#CCE9F2] rounded-lg"
               required
             />
-
+            {success && <p className="text-green-500 text-sm">{success}</p>}
             {error && <p className="text-red-500 text-sm">{error}</p>}
 
             <button className="w-full px-4 py-2 bg-[#CCE9F2] rounded-lg hover:bg-black hover:text-white">
