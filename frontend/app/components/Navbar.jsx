@@ -151,7 +151,8 @@ export default function Navbar() {
                 Sign in / Register
               </button>
 
-              <button className="px-[5px] py-[3px] md:px-4 md:py-2 bg-black text-white text-[12px] md:text-[18px] rounded-full hover:bg-gray-800 transition">
+              <button onClick={openLogin} 
+              className="px-[5px] py-[3px] md:px-4 md:py-2 bg-black text-white text-[12px] md:text-[18px] rounded-full hover:bg-gray-800 transition">
                 Post a job
               </button>
             </div>
