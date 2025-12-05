@@ -12,6 +12,12 @@ export const getJobs = async () => await fetch(API_URL).then(res => res.json());
 export const getJob = async (id) =>
   await fetch(`${API_URL}/${id}`).then(res => res.json());
 
+export const getJobsByUser = async (userId) => {
+  const jobs = await getJobs();     // fetch all jobs
+  return jobs.filter(job => job.userid === userId);
+};
+
+
 export const addJob = async (job) => {
   await fetch(API_URL, {
     method: "POST",

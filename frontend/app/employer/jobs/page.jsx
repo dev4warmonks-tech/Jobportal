@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getJobs } from "../../api";
+// import { getJobs } from "../../api";
+import { getJobsByUser } from "@/app/api/api";
 const API_URL = "https://api.mindssparsh.com/api/jobs";
 
 
@@ -9,8 +10,17 @@ export default function BasicDetails() {
 
   const [jobs, setJobs] = useState([]);
 
+  // useEffect(() => {
+  //   getJobs().then(setJobs);
+  // }, []);
+
   useEffect(() => {
-    getJobs().then(setJobs);
+    const storedUser = localStorage.getItem("user");
+    const user = storedUser ? JSON.parse(storedUser) : null;
+
+    if (!user?._id) return;
+
+    getJobsByUser(user._id).then(setJobs);
   }, []);
 
 

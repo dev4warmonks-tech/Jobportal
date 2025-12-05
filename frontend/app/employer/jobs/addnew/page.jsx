@@ -30,7 +30,23 @@ export default function BasicDetails() {
 
   const submit = async (e) => {
     e.preventDefault();
-    await addJob({ ...job, skills: selected });
+
+    const storedUser = localStorage.getItem("user");
+    const userId = storedUser ? JSON.parse(storedUser)._id : null;
+
+    if (!userId) {
+      alert("User not logged in!");
+      return;
+    }
+
+    const finalJob = {
+      ...job,
+      skills: selected,
+      userid: userId,
+    };
+
+    // await addJob({ ...job, skills: selected });
+    await addJob(finalJob);
     alert("Job posted!");
     setJob({
       title: "",
@@ -42,7 +58,8 @@ export default function BasicDetails() {
       skills: [],
       jobtype: "fulltime",
       jobcategory: "ui",
-      experience: "0-1"
+      experience: "0-1",
+      mails: ""
     });
     setSelected([]);
   };
