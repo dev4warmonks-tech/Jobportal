@@ -1,12 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSession } from 'next-auth/react';
 import { getJobs } from "../api";
 import Modal from "../components/Modal/page";
 
 import { useSearchParams } from 'next/navigation';
 
-export default function FilterPage() {
+function FilterPageContent() {
     const [jobs, setJobs] = useState([]);
     const [filteredJobs, setFilteredJobs] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -302,26 +302,24 @@ export default function FilterPage() {
 
                         <h3 className="font-semibold mb-3">Job Type</h3>
                         <div className="space-y-2">
-                            <div className="space-y-2">
-                                {[
-                                    { label: "Full Time", value: "fulltime" },
-                                    { label: "Part Time", value: "parttime" },
-                                    { label: "Remote", value: "remote" },
-                                    { label: "Contract", value: "contract" },
-                                    { label: "Freelance", value: "freelance" },
-                                    { label: "Internship", value: "internship" }
-                                ].map(type => (
-                                    <label key={type.value} className="flex items-center gap-2 cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedJobTypes.includes(type.value)}
-                                            onChange={() => handleJobTypeChange(type.value)}
-                                            className="w-4 h-4 accent-black"
-                                        />
-                                        <span className="text-sm text-gray-600">{type.label}</span>
-                                    </label>
-                                ))}
-                            </div>
+                            {[
+                                { label: "Full Time", value: "fulltime" },
+                                { label: "Part Time", value: "parttime" },
+                                { label: "Remote", value: "remote" },
+                                { label: "Contract", value: "contract" },
+                                { label: "Freelance", value: "freelance" },
+                                { label: "Internship", value: "internship" }
+                            ].map(type => (
+                                <label key={type.value} className="flex items-center gap-2 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedJobTypes.includes(type.value)}
+                                        onChange={() => handleJobTypeChange(type.value)}
+                                        className="w-4 h-4 accent-black"
+                                    />
+                                    <span className="text-sm text-gray-600">{type.label}</span>
+                                </label>
+                            ))}
                         </div>
                     </div>
 
@@ -442,5 +440,13 @@ export default function FilterPage() {
                 )}
             </Modal>
         </div>
+    );
+}
+
+export default function FilterPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+            <FilterPageContent />
+        </Suspense>
     );
 }
