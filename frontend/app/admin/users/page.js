@@ -1,13 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { BASE_URL } from "../../../config/apiConfig";
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    fetch(`${BASE_URL}/api/users`)
+    fetch(`http://91.108.110.47:3002/api/users`)
       .then(res => res.json())
       .then(data => setUsers(data));
   }, []);
