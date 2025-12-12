@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { BASE_URL } from "../../../config/apiConfig";
+import { BASE_URL } from '../../config/apiConfig';
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState([]);
